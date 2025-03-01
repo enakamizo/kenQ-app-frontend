@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useFormContext } from "@/context/FormContext"; // useContextを利用
+import { useFormContext } from "@/context/FormContext";
 
 export default function ConfirmForm() {
   const router = useRouter();
-  const { formData } = useFormContext(); // `useSearchParams()` の代わりに `context` からデータ取得
+  const { formData } = useFormContext(); // `formData` の型を `FormDataType` に統一
 
   // 「登録を確定する」ボタン
   const handleConfirm = () => {
@@ -13,7 +13,7 @@ export default function ConfirmForm() {
     router.push("/"); // 登録後の遷移先（トップページ）
   };
 
-  // 「修正する」ボタンで register に戻る（クエリパラメータを削除）
+  // 「修正する」ボタンで register に戻る
   const handleBack = () => {
     router.push("/register");
   };
@@ -26,19 +26,26 @@ export default function ConfirmForm() {
         {/* 依頼のカテゴリー */}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">依頼のカテゴリー</label>
-          <p className="bg-white p-2 border border-gray-300 rounded-md">{formData.category}</p>
+          <p className="bg-white p-2 border border-gray-300 rounded-md">{formData.category || "未選択"}</p>
         </div>
 
         {/* 案件のタイトル */}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">案件のタイトル（40文字以内）</label>
-          <p className="bg-white p-2 border border-gray-300 rounded-md">{formData.title}</p>
+          <p className="bg-white p-2 border border-gray-300 rounded-md">{formData.title || "未入力"}</p>
         </div>
 
         {/* 依頼背景 */}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">依頼背景</label>
-          <p className="bg-white p-2 border border-gray-300 rounded-md">{formData.background}</p>
+          <p className="bg-white p-2 border border-gray-300 rounded-md"
+            style={{
+              whiteSpace: "pre-wrap",
+              wordBreak: "break-word",
+              overflowWrap: "break-word"
+            }}>
+            {formData.background || "未入力"}
+          </p>
         </div>
 
         {/* 研究分野 */}
@@ -69,7 +76,7 @@ export default function ConfirmForm() {
           登録を確定する
         </button>
         <button
-          onClick={handleBack} // 修正ボタンで register に戻る（クエリパラメータを削除）
+          onClick={handleBack}
           className="bg-gray-400 text-white px-6 py-3 rounded-lg shadow-md hover:bg-gray-600"
         >
           修正する

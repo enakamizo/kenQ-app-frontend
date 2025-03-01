@@ -6,10 +6,16 @@ import RequestForm from "@/components/RequestForm";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { formData, setFormData } = useFormContext(); // useContextを利用
+  const { formData, setFormData } = useFormContext();
 
-  // 子コンポーネント（RequestForm）からデータを受け取る
-  const handleFormSubmit = (data) => {
+  const handleFormSubmit = (data: {
+    category: string;
+    title: string;
+    background: string;
+    researchField: string;
+    researcherLevel: string;
+    deadline: string;
+  }) => {
     setFormData(data);
     router.push("/register/confirm");
   };
@@ -17,7 +23,7 @@ export default function RegisterPage() {
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
       <h1 className="text-2xl font-bold mb-4">新規案件を登録する</h1>
-      <RequestForm onSubmit={handleFormSubmit} defaultValues={formData} />
+      <RequestForm onSubmit={handleFormSubmit} />
     </div>
   );
 }

@@ -1,11 +1,28 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
-const FormContext = createContext({}); // ← null ではなく `{}` に変更！
+// フォームの型定義
+type FormDataType = {
+  category: string;
+  title: string;
+  background: string;
+  researchField: string;
+  researcherLevel: string;
+  deadline: string;
+};
 
-export function FormProvider({ children }) {
-  const [formData, setFormData] = useState({
+// Context の型定義
+type FormContextType = {
+  formData: FormDataType;
+  setFormData: React.Dispatch<React.SetStateAction<FormDataType>>;
+};
+
+// Context を null 可能にする
+const FormContext = createContext<FormContextType | null>(null);
+
+export function FormProvider({ children }: { children: ReactNode }) {
+  const [formData, setFormData] = useState<FormDataType>({
     category: "",
     title: "",
     background: "",
@@ -21,6 +38,10 @@ export function FormProvider({ children }) {
   );
 }
 
-export function useFormContext() {
-  return useContext(FormContext);
+export function useFormContext(): FormContextType {
+  const context = useContext(FormContext);
+  if (!context) {
+    throw new Error("useFormContext must be used within a FormProvider");
+  }
+  return context;
 }
