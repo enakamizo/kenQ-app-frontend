@@ -3,7 +3,11 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function RequestForm() {
+type RequestFormProps = {
+  onSubmit?: (data: any) => void;
+};
+
+export default function RequestForm({ onSubmit }: RequestFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -29,17 +33,24 @@ export default function RequestForm() {
     e.preventDefault();
 
     // フォームデータをURLのクエリパラメータに変換
-    const queryParams = new URLSearchParams({
+    const formData = {
       title,
       background,
       category,
       researchField,
       researcherLevel,
       deadline,
-    }).toString();
+    };
 
-    // 確認画面へ遷移
-    router.push(`/register/confirm?${queryParams}`);
+    if (onSubmit) {
+      // `onSubmit` が渡されている場合は、それを実行
+      onSubmit(formData);
+    }
+    else {
+      // それ以外の場合は `queryParams` を作成してページ遷移
+      const queryParams = new URLSearchParams(formData as any);
+      router.push(`/register/confirm?${queryParams}`);
+    }
   };
 
   return (
