@@ -9,8 +9,11 @@ export default function ConfirmForm() {
 
   // 「登録を確定する」ボタン
   const handleConfirm = () => {
+    if (formData) {
+      localStorage.setItem("projectData", JSON.stringify(formData));
+    }
     alert("案件を登録しました！");
-    router.push("/"); // 登録後の遷移先（トップページ）
+    router.push("/projects/1"); // 案件ページに遷移
   };
 
   // 「修正する」ボタンで register に戻る
@@ -68,16 +71,16 @@ export default function ConfirmForm() {
       </div>
 
       {/* ボタン配置 */}
-      <div className="mt-6 flex justify-center space-x-4">
+      <div className="mt-6 flex justify-center space-x-6">
         <button
           onClick={handleConfirm}
-          className="bg-gray-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-gray-700"
+          className="w-40 py-3 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-200"
         >
           登録を確定する
         </button>
         <button
           onClick={handleBack}
-          className="bg-gray-400 text-white px-6 py-3 rounded-lg shadow-md hover:bg-gray-600"
+          className="w-40 py-3 bg-gray-400 text-white rounded-lg shadow-md hover:bg-gray-600 transition duration-200"
         >
           修正する
         </button>
