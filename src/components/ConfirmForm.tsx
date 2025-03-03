@@ -2,23 +2,35 @@
 
 import { useRouter } from "next/navigation";
 import { useFormContext } from "@/context/FormContext";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useState } from "react";
 
 export default function ConfirmForm() {
   const router = useRouter();
   const { formData } = useFormContext(); // `formData` の型を `FormDataType` に統一
+  const [showPopup, setShowPopup] = useState(false);
 
   // 「登録を確定する」ボタン
   const handleConfirm = () => {
     if (formData) {
       localStorage.setItem("projectData", JSON.stringify(formData));
     }
-    alert("案件を登録しました！");
-    router.push("/projects/1"); // 案件ページに遷移
+    setShowPopup(true); // ✅ ポップアップを表示
+  };
+
+  // 研究者リストに進むボタン
+  const handleGoToResearchers = () => {
+    const storedData = localStorage.getItem("projectData");
+    const projectData = storedData ? JSON.parse(storedData) : null;
+    const projectId = projectData?.id || "1"; // デフォルト値を1に設定
+  
+    router.push(`/projects/${projectId}`); // ✅ `/projects/[id]` に遷移
   };
 
   // 「修正する」ボタンで register に戻る
   const handleBack = () => {
-    router.push("/register");
+    router.push("/register/[id]");
   };
 
   return (
@@ -85,7 +97,27 @@ export default function ConfirmForm() {
           修正する
         </button>
       </div>
+
+      {/* ✅ ポップアップ（モーダル） */}
+      {showPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-xs">
+            <h2 className="text-xl font-bold mb-4">案件内容を登録しました</h2>
+            <button
+              onClick={handleGoToResearchers}
+              className="w-full py-3 bg-gray-900 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-200"
+            >
+              研究者リストに進む
+            </button>
+            <p
+              onClick={() => setShowPopup(false)}
+              className="mt-4 text-sm text-gray-500 cursor-pointer hover:underline"
+            >
+              マイページにもどる
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
