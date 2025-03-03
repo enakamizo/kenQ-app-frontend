@@ -1,6 +1,7 @@
 import localFont from "next/font/local";
 import "./globals.css";
-import { FormProvider } from "@/context/FormContext"; // ← FormProvider を追加
+import { FormProvider } from "@/context/FormContext"; // FormProvider を追加
+import Header from "@/components/Header"; // ヘッダーをインポート
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,10 +23,11 @@ export default function RootLayout({
   children,
 }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="ja">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <FormProvider> {/* ここで FormProvider をラップ */}
-          {children}
+        <FormProvider> {/* FormProvider でラップ */}
+          <Header /> {/* 追加: ヘッダーを組み込み */}
+          <main className="p-4">{children}</main> {/* main タグを追加 */}
         </FormProvider>
       </body>
     </html>
