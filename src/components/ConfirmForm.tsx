@@ -30,7 +30,7 @@ export default function ConfirmForm() {
 
   // 「修正する」ボタンで register に戻る
   const handleBack = () => {
-    router.push("/register/[id]");
+    router.push("/register");
   };
 
   return (
