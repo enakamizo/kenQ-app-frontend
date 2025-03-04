@@ -59,7 +59,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
       <div>
         <label className="block text-sm font-medium mb-1">依頼のカテゴリー <span className="text-red-500">*</span></label>
         <div className="space-y-2">
-          {["ヒアリング", "アドバイス", "コンサルティング"].map((option) => (
+          {["研究分野のヒアリング", "アドバイス・業務改善の相談（壁打ち程度）", "コンサルティング・共同研究の相談"].map((option) => (
             <label key={option} className="flex items-center space-x-2">
               <input
                 type="radio"
@@ -76,13 +76,13 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
 
       {/* 案件のタイトル */}
       <div>
-        <label className="block text-sm font-medium mb-1">案件のタイトル（45文字以内） <span className="text-red-500">*</span></label>
+        <label className="block text-sm font-medium mb-1">案件のタイトル（40文字以内） <span className="text-red-500">*</span></label>
         <input
           type="text"
           name="title"
           value={localFormData.title}
           onChange={handleChange}
-          maxLength={45}
+          maxLength={40}
           placeholder="タイトルを入力してください"
           className="w-full p-2 border border-gray-300 rounded-lg"
         />
@@ -127,9 +127,9 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
           className="w-full p-2 border border-gray-300 rounded-lg"
         >
           <option value="">選択してください</option>
-          <option value="初級">初級</option>
-          <option value="中級">中級</option>
-          <option value="上級">上級</option>
+          <option value="教授">教授</option>
+          <option value="准教授">准教授</option>
+          <option value="研究員">研究員</option>
         </select>
       </div>
 
