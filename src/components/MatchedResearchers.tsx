@@ -15,37 +15,43 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
     <div className="p-6 bg-gray-50 rounded-lg shadow-md mt-6">
       <h3 className="text-lg font-bold mb-4">おすすめの研究者リスト</h3>
       <div className="bg-white p-4 rounded-lg shadow">
-        <table className="w-full text-sm text-left border-collapse">
-          <thead className="bg-gray-100">
+        <table className="w-full text-sm text-left border-collapse table-fixed">
+          <thead className="bg-gray-100 text-xs">
             <tr className="border-b">
-              <th className="p-2">名前</th>
-              <th className="p-2">所属</th>
-              <th className="p-2">スコア</th>
-              <th className="p-2 text-center">気になる</th>
-              <th className="p-2 text-center">オファー</th>
-              <th className="p-2 text-center">辞退連絡</th>
-              <th className="p-2 text-center">チャット</th>
+              <th className="p-2 w-[125px] whitespace-nowrap">名前</th> {/* 名前の幅を固定 */}
+              <th className="p-2 min-w-[280px] break-words">所属</th> {/* 所属の幅を調整 */}
+              <th className="p-2 w-[70px] text-center whitespace-nowrap">研究者情報</th>
+              <th className="p-2 w-[70px] text-center">スコア</th>
+              <th className="p-2 w-[70px] text-center">気になる</th>
+              <th className="p-2 w-[70px] text-center">オファー</th>
+              <th className="p-2 w-[70px] text-center">辞退連絡</th>
+              <th className="p-2 w-[70px] text-center">
+                <img src="/Gmail Logo.png" alt="チャット" className="h-5 w-5 mx-auto" />
+              </th>
             </tr>
           </thead>
           <tbody>
             {researchers.map((researcher) => (
               <tr key={researcher.id} className="border-b">
-                <td className="p-2">{researcher.name}</td>
-                <td className="p-2">{researcher.affiliation}</td>
-                <td className="p-2">{researcher.score}</td>
+                <td className="p-2 whitespace-nowrap">{researcher.name}</td>
+                <td className="p-2 break-words">{researcher.affiliation}</td>
                 <td className="p-2 text-center">
-                  <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-600" />
-                </td>
-                <td className="p-2 text-center">
-                  <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-600" />
-                </td>
-                <td className="p-2 text-center">
-                  <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-600" />
-                </td>
-                <td className="p-2 text-center">
-                  <button className="text-blue-600 hover:text-blue-800">
-                    📩
+                  <button className="px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-700">
+                    info
                   </button>
+                </td>
+                <td className="p-2 text-center">{researcher.score}</td>
+                <td className="p-2 text-center">
+                  <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-600" />
+                </td>
+                <td className="p-2 text-center">
+                  <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-600" />
+                </td>
+                <td className="p-2 text-center">
+                  <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-600" />
+                </td>
+                <td className="p-2 text-center">
+                  <button className="text-blue-600 hover:text-blue-800">📩</button> 
                 </td>
               </tr>
             ))}
@@ -55,5 +61,3 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
     </div>
   );
 }
-
-
