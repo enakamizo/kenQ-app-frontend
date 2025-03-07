@@ -10,7 +10,7 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
   useEffect(() => {
     const fetchResearchers = async () => {
       try {
-        const apiUrl = `${process.env.NEXT_PUBLIC_AZURE_API_URL}/matching-results?project_id=${projectId}`;
+        const apiUrl = `${process.env.NEXT_PUBLIC_AZURE_API_URL}matching-results?project_id=${projectId}`;
         console.log("Fetching researchers from:", apiUrl);
 
         const response = await fetch(apiUrl, {
