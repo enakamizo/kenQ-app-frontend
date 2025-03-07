@@ -111,9 +111,17 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
           className="w-full p-2 border border-gray-300 rounded-lg"
         >
           <option value="">選択してください</option>
-          <option value="化学">化学</option>
-          <option value="物理">物理</option>
-          <option value="生物">生物</option>
+          <option value="ライフサイエンス">ライフサイエンス</option>
+          <option value="情報通信">情報通信</option>
+          <option value="環境・農学">環境・農学</option>
+          <option value="ナノテク・材料">ナノテク・材料</option>
+          <option value="エネルギー">エネルギー</option>
+          <option value="ものづくり技術">ものづくり技術</option>
+          <option value="社会基盤">社会基盤</option>
+          <option value="フロンティア">フロンティア</option>
+          <option value="人文・社会">人文・社会</option>
+          <option value="自然科学一般">自然科学一般</option>
+          <option value="その他">その他</option>
         </select>
       </div>
 
@@ -129,7 +137,14 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
           <option value="">選択してください</option>
           <option value="教授">教授</option>
           <option value="准教授">准教授</option>
+          <option value="助教">助教</option>
+          <option value="講師">講師</option>
+          <option value="助教授">助教授</option>
+          <option value="助手">助手</option>
           <option value="研究員">研究員</option>
+          <option value="特任助教">特任助教</option>
+          <option value="主任研究員">主任研究員</option>
+          <option value="特任教授">特任教授</option>
         </select>
       </div>
 
