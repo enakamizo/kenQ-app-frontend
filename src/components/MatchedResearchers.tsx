@@ -1,31 +1,51 @@
 "use client";
 
-import { useState } from "react";
-
-const dummyResearchers = [
-  { id: "101", name: "池田 芳和", affiliation: "名古屋大学 医学部附属病院", score: 90 },
-  { id: "102", name: "今村 幸治", affiliation: "熊本大学 電子情報工学科", score: 89 },
-  { id: "103", name: "三宅 美咲", affiliation: "国立研究開発法人 先端医療研究センター", score: 88 },
-  { id: "104", name: "三宅 美咲", affiliation: "国立研究開発法人 先端医療研究センター", score: 88 },
-];
+import { useState, useEffect } from "react";
 
 export default function MatchedResearchers({ projectId }: { projectId: string }) {
-  const [researchers, setResearchers] = useState(dummyResearchers);
+  const [researchers, setResearchers] = useState([]);
   const [selectedResearchers, setSelectedResearchers] = useState<string[]>([]);
   const [showPopup, setShowPopup] = useState(false);
 
-  // ✅ 研究者のオファーチェック変更時の処理
+  useEffect(() => {
+    const fetchResearchers = async () => {
+      try {
+        const apiUrl = `${process.env.NEXT_PUBLIC_AZURE_API_URL}/matching-results?project_id=${projectId}`;
+        console.log("Fetching researchers from:", apiUrl);
+
+        const response = await fetch(apiUrl, {
+          method: "GET",
+          headers: {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0"
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`API Error: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        setResearchers(data);
+      } catch (error) {
+        console.error("研究者データの取得エラー:", error);
+      }
+    };
+
+    fetchResearchers();
+  }, [projectId]);
+
   const handleCheckboxChange = (researcherId: string) => {
     setSelectedResearchers((prev) =>
       prev.includes(researcherId)
-        ? prev.filter((id) => id !== researcherId) // すでにチェックされていたら削除
-        : [...prev, researcherId] // チェックされたら追加
+        ? prev.filter((id) => id !== researcherId)
+        : [...prev, researcherId]
     );
   };
 
-  // ✅「オファーする」ボタンの処理
   const handleOffer = () => {
-    if (selectedResearchers.length === 0) return; // チェックがない場合は何もしない
+    if (selectedResearchers.length === 0) return;
     setShowPopup(true);
   };
 
@@ -38,7 +58,7 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
             <tr className="border-b">
               <th className="p-2 w-[125px] whitespace-nowrap">名前</th>
               <th className="p-2 min-w-[280px] break-words">所属</th>
-              <th className="p-2 w-[70px] text-center whitespace-nowrap">研究者情報</th>
+              <th className="p-2 w-[70px] text-center">研究者情報</th>
               <th className="p-2 w-[70px] text-center">スコア</th>
               <th className="p-2 w-[70px] text-center">気になる</th>
               <th className="p-2 w-[70px] text-center">オファー</th>
@@ -49,7 +69,7 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
             </tr>
           </thead>
           <tbody>
-            {researchers.map((researcher) => (
+            {researchers.map((researcher: any) => (
               <tr key={researcher.id} className="border-b">
                 <td className="p-2 whitespace-nowrap">{researcher.name}</td>
                 <td className="p-2 break-words">{researcher.affiliation}</td>
@@ -58,23 +78,23 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
                     info
                   </button>
                 </td>
-                <td className="p-2 text-center">{researcher.score}</td>
+                <td className="p-2 text-center">{researcher.score || "N/A"}</td>
                 <td className="p-2 text-center">
-                  <input type="checkbox" className="form-checkbox h-5 w-5 border-gray-300 accent-gray-500 rounded focus:ring-gray-400"/>
+                  <input type="checkbox" className="form-checkbox h-5 w-5 border-gray-400 accent-gray-600 rounded focus:ring-gray-500" />
                 </td>
                 <td className="p-2 text-center">
                   <input
                     type="checkbox"
-                    className="form-checkbox h-5 w-5 border-gray-300 accent-gray-500 rounded focus:ring-gray-400"
+                    className="form-checkbox h-5 w-5 border-gray-400 accent-gray-600 rounded focus:ring-gray-500"
                     onChange={() => handleCheckboxChange(researcher.id)}
                     checked={selectedResearchers.includes(researcher.id)}
                   />
                 </td>
                 <td className="p-2 text-center">
-                  <input type="checkbox" className="form-checkbox h-5 w-5 border-gray-300 accent-gray-500 rounded focus:ring-gray-400" />
+                  <input type="checkbox" className="form-checkbox h-5 w-5 border-gray-400 accent-gray-600 rounded focus:ring-gray-500" />
                 </td>
                 <td className="p-2 text-center">
-                  <button className="text-gray-600 hover:text-gray-800">📩</button>
+                  <button className="text-blue-600 hover:text-blue-800">📩</button>
                 </td>
               </tr>
             ))}
@@ -86,7 +106,7 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
       <div className="mt-4 flex justify-center">
         <button
           onClick={handleOffer}
-          disabled={selectedResearchers.length === 0} // ✅ チェックがないと無効化
+          disabled={selectedResearchers.length === 0}
           className={`px-6 py-2 rounded-lg shadow-md transition duration-200 text-lg font-semibold ${
             selectedResearchers.length === 0
               ? "bg-gray-400 text-white cursor-not-allowed"
