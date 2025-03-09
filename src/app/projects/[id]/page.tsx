@@ -19,7 +19,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
         <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
             {/* 上段：案件の詳細 */}
             {projectData ? (
-                <ProjectDetails projectData={projectData} />
+                <ProjectDetails projectId={projectId} />
             ) : (
                 <p>Loading...</p>
             )}
