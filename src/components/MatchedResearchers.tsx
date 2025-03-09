@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";  // ✅ 追加
 
 export default function MatchedResearchers({ projectId }: { projectId: string }) {
   const [researchers, setResearchers] = useState([]);
   const [selectedResearchers, setSelectedResearchers] = useState<string[]>([]);
   const [showPopup, setShowPopup] = useState(false);
+  const router = useRouter();  // ✅ 追加
 
   useEffect(() => {
     const fetchResearchers = async () => {
@@ -32,9 +34,13 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
         console.error("研究者データの取得エラー:", error);
       }
     };
-
+    console.log("Fetching researchers from:", `https://app-advanced3-1-cgghbjavdyhdbfeb.canadacentral-01.azurewebsites.net/matching-results?project_id=${projectId}`);
     fetchResearchers();
   }, [projectId]);
+
+  const handleInfoClick = (researcherId: string) => {
+    router.push(`/researcher/${researcherId}`);  // ✅ 研究者詳細ページへ遷移
+  };
 
   const handleCheckboxChange = (researcherId: string) => {
     setSelectedResearchers((prev) =>
@@ -74,7 +80,10 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
                 <td className="p-2 whitespace-nowrap">{researcher.name}</td>
                 <td className="p-2 break-words">{researcher.affiliation}</td>
                 <td className="p-2 text-center">
-                  <button className="px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-700">
+                  <button 
+                    onClick={() => handleInfoClick(researcher.id)}  // ✅ 修正
+                    className="px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-700"
+                  >
                     info
                   </button>
                 </td>

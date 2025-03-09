@@ -1,17 +1,31 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import ProjectDetails from "@/components/ProjectDetails";
 import MatchedResearchers from "@/components/MatchedResearchers";
 
 export default function ProjectPage({ params }: { params: { id: string } }) {
-  const projectId = params.id; // URLから案件IDを取得
+    const projectId = params.id;
+    const [projectData, setProjectData] = useState<any>(null);
 
-  return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
-      {/* 上段：案件の詳細 */}
-      <ProjectDetails projectId={projectId} />
+    useEffect(() => {
+        const storedData = localStorage.getItem("projectData");
+        if (storedData) {
+            setProjectData(JSON.parse(storedData));
+        }
+    }, []);
 
-      {/* 下段：マッチングした研究者リスト */}
-      <MatchedResearchers projectId={projectId} />
-    </div>
-  );
+    return (
+        <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
+            {/* 上段：案件の詳細 */}
+            {projectData ? (
+                <ProjectDetails projectData={projectData} />
+            ) : (
+                <p>Loading...</p>
+            )}
+
+            {/* 下段：おすすめの研究者リスト */}
+            <MatchedResearchers projectId={projectId} />
+        </div>
+    );
 }
-
