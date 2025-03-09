@@ -52,7 +52,7 @@ export default function ConfirmForm() {
           } else {
               throw new Error("No project_id received");
           }
-      } catch (err) {
+      } catch (err: any) {
           console.error("Error registering project:", err);
           setError(err.message);
       } finally {
