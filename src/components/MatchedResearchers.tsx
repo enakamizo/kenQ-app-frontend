@@ -65,7 +65,7 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
               <th className="p-2 w-[125px] whitespace-nowrap">名前</th>
               <th className="p-2 min-w-[280px] break-words">所属</th>
               <th className="p-2 w-[70px] text-center">研究者情報</th>
-              <th className="p-2 w-[70px] text-center">スコア</th>
+              <th className="p-2 w-[70px] text-center">マッチング理由</th>
               <th className="p-2 w-[70px] text-center">気になる</th>
               <th className="p-2 w-[70px] text-center">オファー</th>
               <th className="p-2 w-[70px] text-center">辞退連絡</th>
@@ -87,7 +87,14 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
                     info
                   </button>
                 </td>
-                <td className="p-2 text-center">{researcher.score || "N/A"}</td>
+                <td className="p-2 text-center">
+                  <button 
+                      className="px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-700"
+                  onClick={() => handleShowMatchingReason(researcher.id)}
+                  >
+                    why
+                  </button>
+                </td>
                 <td className="p-2 text-center">
                   <input type="checkbox" className="form-checkbox h-5 w-5 border-gray-400 accent-gray-600 rounded focus:ring-gray-500" />
                 </td>
