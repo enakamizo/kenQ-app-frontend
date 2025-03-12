@@ -2,9 +2,15 @@
 
 import { useEffect, useState } from "react";
 
+interface Researcher {
+    name: string;
+    affiliation: string;
+    description: string;
+}
+
 export default function ResearcherPage({ params }: { params: { id: string } }) {
     const researcherId = params.id;
-    const [researcher, setResearcher] = useState(null);
+    const [researcher, setResearcher] = useState<Researcher | null>(null);
 
     useEffect(() => {
         if (researcherId) {
