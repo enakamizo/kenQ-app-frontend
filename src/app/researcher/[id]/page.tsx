@@ -31,6 +31,11 @@ export default function ResearcherPage({ params }: { params: { id: string } }) {
 
     if (!researcher) return <p>Loading...</p>;
 
+    const handleShowMatchingReason = (researcherId: string) => {
+        console.log(`Matching reason requested for researcher ID: ${researcherId}`);
+        // ここにモーダルを開く処理を追加予定
+    };
+
     return (
         <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
             <h1 className="text-2xl font-bold">{researcher.name}</h1>
