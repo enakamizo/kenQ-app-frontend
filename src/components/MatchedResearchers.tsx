@@ -89,8 +89,8 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
                 </td>
                 <td className="p-2 text-center">
                   <button 
-                      className="px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-700"
-                  onClick={() => handleShowMatchingReason(researcher.id)}
+                    className="px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-700"
+                    //onClick={() => handleShowMatchingReason(researcher.id)}
                   >
                     why
                   </button>
