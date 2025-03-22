@@ -8,6 +8,9 @@ type FormDataType = {
   category: string;
   title: string;
   background: string;
+  industry: string;        // ✅追加
+  businessDescription: string; // ✅追加
+  university: string;      // ✅追加
   researchField: string;
   researcherLevel: string;
   deadline: string;
@@ -25,6 +28,9 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
     category: "",
     title: "",
     background: "",
+    industry: "",             // ✅追加
+    businessDescription: "",  // ✅追加
+    university: "",           // ✅追加
     researchField: "",
     researcherLevel: "",
     deadline: "",
@@ -98,6 +104,53 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
           placeholder="案件の背景を記載してください"
           className="w-full p-2 border border-gray-300 rounded-lg"
           rows={4}
+        />
+      </div>
+
+      {/* 業種 */}
+      <div>
+        <label className="block text-sm font-medium mb-1">業種</label>
+        <select
+          name="industry"
+          value={localFormData.industry}
+          onChange={handleChange}
+          className="w-full p-2 border border-gray-300 rounded-lg"
+        >
+          <option value="">選択してください</option>
+          <option value="自動車">自動車</option>
+          <option value="精密機械">精密機械</option>
+          <option value="機械">機械</option>
+          <option value="化学">化学</option>
+          <option value="食品">食品</option>
+          <option value="建設">建設</option>
+          <option value="サービス">サービス</option>
+          <option value="その他">その他</option>
+        </select>
+      </div>
+
+      {/* 事業内容 */}
+      <div>
+        <label className="block text-sm font-medium mb-1">事業内容</label>
+        <input
+          type="text"
+          name="businessDescription"
+          value={localFormData.businessDescription}
+          onChange={handleChange}
+          placeholder="事業内容を入力してください"
+          className="w-full p-2 border border-gray-300 rounded-lg"
+        />
+      </div>
+
+      {/* 大学 */}
+      <div>
+        <label className="block text-sm font-medium mb-1">大学</label>
+        <input
+          type="text"
+          name="university"
+          value={localFormData.university}
+          onChange={handleChange}
+          placeholder="大学名を入力してください"
+          className="w-full p-2 border border-gray-300 rounded-lg"
         />
       </div>
 

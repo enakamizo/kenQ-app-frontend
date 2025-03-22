@@ -17,7 +17,8 @@ export default function ConfirmForm() {
         setError(null);
         try {
             const response = await fetch(
-                "https://app-advanced3-1-cgghbjavdyhdbfeb.canadacentral-01.azurewebsites.net/project-registration",
+                "https://app-advanced3-1-cgghbjavdyhdbfeb.canadacentral-01.azurewebsites.net/project-registration",  // 本番環境用
+                // "http://127.0.0.1:8000/project-registration",　//ローカル環境用
                 {
                     method: "POST",
                     headers: {
@@ -27,6 +28,9 @@ export default function ConfirmForm() {
                         project_title: formData.title || "未入力",
                         consultation_category: formData.category || "未選択",
                         project_content: formData.background || "未入力",
+                        industry: formData.industry || "未選択",                 // ✅追加
+                        business_description: formData.businessDescription || "未入力", // ✅追加
+                        university: formData.university || "未入力",             // ✅追加
                         research_field: formData.researchField || "未選択",
                         preferred_researcher_level: formData.researcherLevel || "未選択",
                         application_deadline: formData.deadline || "未設定",
@@ -42,23 +46,23 @@ export default function ConfirmForm() {
             console.log("Project registered:", data);
 
             if (data.project_id) {
-              // ✅ `projectData` に `formData` も保存
-              const projectData = {
-                  ...formData, // ✅ 以前の `formData` を保持
-                  project_id: data.project_id, // ✅ API からの `project_id` を追加
-              };
-              localStorage.setItem("projectData", JSON.stringify(projectData)); // ✅ `localStorage` に保存
-              setShowPopup(true); // ✅ ポップアップを表示
-          } else {
-              throw new Error("No project_id received");
-          }
-      } catch (err: any) {
-          console.error("Error registering project:", err);
-          setError(err.message);
-      } finally {
-          setIsLoading(false);
-      }
-  };
+            // ✅ `projectData` に `formData` も保存
+                const projectData = {
+                    ...formData, // ✅ 以前の `formData` を保持
+                    project_id: data.project_id, // ✅ API からの `project_id` を追加
+                };
+                localStorage.setItem("projectData", JSON.stringify(projectData)); // ✅ `localStorage` に保存
+                setShowPopup(true); // ✅ ポップアップを表示
+            } else {
+                throw new Error("No project_id received");
+            }
+        } catch (err: any) {
+            console.error("Error registering project:", err);
+            setError(err.message);
+        } finally {
+        setIsLoading(false);
+    }
+};
 
     // ✅ 研究者リストに進む
     const handleGoToResearchers = () => {
@@ -90,6 +94,24 @@ export default function ConfirmForm() {
                 <div className="mb-4">
                     <label className="block text-sm font-medium mb-1">依頼背景</label>
                     <p className="bg-white p-2 border border-gray-300 rounded-md">{formData.background || "未入力"}</p>
+                </div>
+
+                {/* 業種 */}
+                <div className="mb-4">
+                    <label className="block text-sm font-medium mb-1">業種</label>
+                    <p className="bg-white p-2 border border-gray-300 rounded-md">{formData.industry || "未選択"}</p>
+                </div>
+
+                {/* 事業内容 */}
+                <div className="mb-4">
+                    <label className="block text-sm font-medium mb-1">事業内容</label>
+                    <p className="bg-white p-2 border border-gray-300 rounded-md">{formData.businessDescription || "未入力"}</p>
+                </div>
+
+                {/* 大学 */}
+                <div className="mb-4">
+                    <label className="block text-sm font-medium mb-1">大学</label>
+                    <p className="bg-white p-2 border border-gray-300 rounded-md">{formData.university || "未入力"}</p>
                 </div>
 
                 {/* 研究分野 */}
