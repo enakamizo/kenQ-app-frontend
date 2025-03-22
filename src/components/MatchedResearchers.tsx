@@ -7,6 +7,8 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
   const [researchers, setResearchers] = useState([]);
   const [selectedResearchers, setSelectedResearchers] = useState<string[]>([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [showReasonModal, setShowReasonModal] = useState(false);
+  const [selectedReason, setSelectedReason] = useState("");
   const router = useRouter();  // ✅ 追加
 
   useEffect(() => {
@@ -30,6 +32,7 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
         }
 
         const data = await response.json();
+        console.log("🔍 researchers data:", data); // 👈 マッチング理由を取得できているか確認
         setResearchers(data);
       } catch (error) {
         console.error("研究者データの取得エラー:", error);
@@ -49,6 +52,11 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
         ? prev.filter((id) => id !== researcherId)
         : [...prev, researcherId]
     );
+  };
+
+  const handleShowMatchingReason = (reason: string) => {
+    setSelectedReason(reason);
+    setShowReasonModal(true);
   };
 
   const handleOffer = () => {
@@ -91,7 +99,7 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
                 <td className="p-2 text-center">
                   <button 
                     className="px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-700"
-                    //onClick={() => handleShowMatchingReason(researcher.id)}
+                    onClick={() => handleShowMatchingReason(researcher.matching_reason)}
                   >
                     why
                   </button>
@@ -142,6 +150,37 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
             <button
               onClick={() => setShowPopup(false)}
               className="w-full py-3 bg-gray-700 text-white rounded-lg shadow-md hover:bg-gray-600 transition duration-200"
+            >
+              閉じる
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ✅ オファー完了ポップアップ */} 
+      {showPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-xs">
+            <h2 className="text-xl font-bold mb-4">オファーしました！</h2>
+            <button
+              onClick={() => setShowPopup(false)}
+              className="w-full py-3 bg-gray-700 text-white rounded-lg shadow-md hover:bg-gray-600 transition duration-200"
+            >
+              閉じる
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ✅ モーダル表示：マッチング理由 */}
+      {showReasonModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg max-w-md w-full shadow-lg text-gray-800">
+            <h2 className="text-xl font-semibold mb-4">マッチング理由</h2>
+            <p className="mb-6 whitespace-pre-wrap">{selectedReason}</p>
+            <button
+              onClick={() => setShowReasonModal(false)}
+              className="w-full py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition"
             >
               閉じる
             </button>
