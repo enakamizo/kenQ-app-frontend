@@ -29,6 +29,9 @@ export function FormProvider({ children }: { children: ReactNode }) {
     category: "",
     title: "",
     background: "",
+    industry: "",             // ✅ 追加
+    businessDescription: "",  // ✅ 追加
+    university: "",           // ✅ 追加
     researchField: "",
     researcherLevel: "",
     deadline: "",
