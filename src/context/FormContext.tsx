@@ -7,6 +7,9 @@ type FormDataType = {
   category: string;
   title: string;
   background: string;
+  industry: string; // ← 追加
+  businessDescription: string; // ← 追加
+  university: string; // ← 追加
   researchField: string;
   researcherLevel: string;
   deadline: string;
