@@ -23,7 +23,7 @@ export default function Home() {
 
       {/* ユーザー情報 */}
       <div className="flex flex-col items-center space-y-5">
-        <Link href="/projects">
+        <Link href="/mypage">
           <button className="w-80 bg-gray-700 text-white py-2 rounded hover:bg-gray-800 transition">
             マイページ
           </button>
