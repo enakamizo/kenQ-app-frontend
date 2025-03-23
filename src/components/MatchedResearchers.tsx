@@ -9,7 +9,11 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
   const [showPopup, setShowPopup] = useState(false);
   const [showReasonModal, setShowReasonModal] = useState(false);
   const [selectedReason, setSelectedReason] = useState("");
+  const [selectedResearcher, setSelectedResearcher] = useState<any | null>(null); // ✅追加
+  const [showInfoModal, setShowInfoModal] = useState(false); // ✅追加
+
   const router = useRouter();  // ✅ 追加
+  
 
   useEffect(() => {
     const fetchResearchers = async () => {
@@ -42,8 +46,11 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
     fetchResearchers();
   }, [projectId]);
 
-  const handleInfoClick = (researcherId: string) => {
-    router.push(`/researcher/${researcherId}`);  // ✅ 研究者詳細ページへ遷移
+  // const handleInfoClick = (researcherId: string) => {
+    // router.push(`/researcher/${researcherId}`);  // ✅ 研究者詳細ページへ遷移
+  const handleInfoClick = (researcher: any) => {
+    setSelectedResearcher(researcher); // ✅変更 研究者情報のモーダルウィンドウ
+    setShowInfoModal(true);            // ✅変更 研究者情報のモーダルウィンドウ
   };
 
   const handleCheckboxChange = (researcherId: string) => {
@@ -90,7 +97,8 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
                 <td className="p-2 break-words">{researcher.affiliation}</td>
                 <td className="p-2 text-center">
                   <button 
-                    onClick={() => handleInfoClick(researcher.id)}  // ✅ 修正
+                    // onClick={() => handleInfoClick(researcher.id)}  // ✅ 修正
+                    onClick={() => handleInfoClick(researcher)} // ✅変更 研究者情報：モーダルウィンドウ
                     className="px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-700"
                   >
                     info
@@ -187,6 +195,31 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
           </div>
         </div>
       )}
+
+            {/* ✅ モーダル表示：研究者情報 */}
+            {showInfoModal && selectedResearcher && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg max-w-2xl w-full shadow-lg text-gray-800 overflow-y-auto max-h-[80vh]">
+            <h2 className="text-xl font-semibold mb-4">研究者情報</h2>
+            <div className="space-y-2 text-sm whitespace-pre-wrap">
+              <p><strong>氏名：</strong>{selectedResearcher.researcher_name}（{selectedResearcher.researcher_name_kana}）</p>
+              <p><strong>所属：</strong>{selectedResearcher.researcher_affiliation_current}</p>
+              <p><strong>部署：</strong>{selectedResearcher.researcher_department_current}</p>
+              <p><strong>職位：</strong>{selectedResearcher.researcher_position_current || "―"}</p>
+              <p><strong>専門分野：</strong>{selectedResearcher.research_field_pi}</p>
+              <p><strong>キーワード：</strong>{selectedResearcher.keywords_pi}</p>
+              <p><strong>過去の所属歴：</strong>{selectedResearcher.researcher_affiliations_past}</p>
+            </div>
+            <button
+              onClick={() => setShowInfoModal(false)}
+              className="mt-6 w-full py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition"
+            >
+              閉じる
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
