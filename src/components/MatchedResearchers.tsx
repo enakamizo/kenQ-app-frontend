@@ -13,7 +13,6 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
   const [showInfoModal, setShowInfoModal] = useState(false); // ✅追加
 
   const router = useRouter();  // ✅ 追加
-  
 
   useEffect(() => {
     const fetchResearchers = async () => {
@@ -37,7 +36,22 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
 
         const data = await response.json();
         console.log("🔍 researchers data:", data); // 👈 マッチング理由を取得できているか確認
-        setResearchers(data);
+        // setResearchers(data);
+        // setResearchers(data.map((item: any) => item.researcher)); // 同じ研究者が複数表示されてしまうので重複除去が必要
+        // 🔧 重複除去してセット
+        const uniqueResearchers = Array.from(
+          // new Map(data.map((item: any) => [item.researcher.researcher_id, item.researcher])).values()
+          new Map(
+            data.map((item: any) => [
+              item.researcher.researcher_id,
+              {
+                ...item.researcher,
+                matching_reason: item.matching_reason, // ← 🔧ここを追加！
+              },
+            ])
+          ).values()
+        );
+        setResearchers(uniqueResearchers);
       } catch (error) {
         console.error("研究者データの取得エラー:", error);
       }
@@ -66,10 +80,34 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
     setShowReasonModal(true);
   };
 
-  const handleOffer = () => {
+  const handleOffer = async () => {
     if (selectedResearchers.length === 0) return;
-    setShowPopup(true);
-  };
+//    setShowPopup(true);
+
+    try {
+      console.log("🟡 今回のオファー対象:", selectedResearchers);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_AZURE_API_URL}/offers`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          projectId: projectId,
+          researcherIds: selectedResearchers,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to send offers: ${response.statusText}`);
+      }
+
+      console.log("✅ オファー送信成功:", await response.json());
+      setShowPopup(true); // 成功ポップアップ表示
+    } catch (error) {
+      console.error("❌ オファー送信エラー:", error);
+      alert("オファー送信に失敗しました。もう一度お試しください。");
+  }
+};
 
   return (
     <div className="p-6 bg-gray-50 rounded-lg shadow-md mt-6">
@@ -93,8 +131,8 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
           <tbody>
             {researchers.map((researcher: any) => (
               <tr key={researcher.id} className="border-b">
-                <td className="p-2 whitespace-nowrap">{researcher.name}</td>
-                <td className="p-2 break-words">{researcher.affiliation}</td>
+                <td className="p-2 whitespace-nowrap">{researcher.researcher_name}</td>
+                <td className="p-2 break-words">{researcher.researcher_affiliation_current}</td>
                 <td className="p-2 text-center">
                   <button 
                     // onClick={() => handleInfoClick(researcher.id)}  // ✅ 修正
@@ -119,8 +157,8 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
                   <input
                     type="checkbox"
                     className="form-checkbox h-5 w-5 border-gray-400 accent-gray-600 rounded focus:ring-gray-500"
-                    onChange={() => handleCheckboxChange(researcher.id)}
-                    checked={selectedResearchers.includes(researcher.id)}
+                    onChange={() => handleCheckboxChange(researcher.researcher_id)}
+                    checked={selectedResearchers.includes(researcher.researcher_id)}
                   />
                 </td>
                 <td className="p-2 text-center">
