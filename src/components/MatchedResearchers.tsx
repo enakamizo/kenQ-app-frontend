@@ -86,6 +86,7 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
 //    setShowPopup(true);
 
     try {
+      console.log("📌 今回の projectId:", projectId);
       console.log("🟡 今回のオファー対象:", selectedResearchers);
       const response = await fetch(`${process.env.NEXT_PUBLIC_AZURE_API_URL}/offers`, {
         method: "POST",
