@@ -209,14 +209,15 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
 
       {/* ✅ オファー完了ポップアップ */} 
       {showPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-xs">
             <h2 className="text-xl font-bold mb-4">オファーしました！</h2>
             <button
-              onClick={() => setShowPopup(false)}
+              // onClick={() => setShowPopup(false)}
+              onClick={() => router.push("/mypage")}  // ← マイページに遷移！
               className="w-full py-3 bg-gray-700 text-white rounded-lg shadow-md hover:bg-gray-600 transition duration-200"
             >
-              閉じる
+              マイページを見る
             </button>
           </div>
         </div>
