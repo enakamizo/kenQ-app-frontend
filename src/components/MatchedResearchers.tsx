@@ -94,8 +94,10 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          projectId: projectId,
-          researcherIds: selectedResearchers,
+          // projectId: projectId,
+          // researcherIds: selectedResearchers,
+          project_id: Number(projectId),               // ← 念のため number に変換
+          researcher_ids: selectedResearchers.map(id => Number(id)), // ← string → number へ変換！
         }),
       });
 
