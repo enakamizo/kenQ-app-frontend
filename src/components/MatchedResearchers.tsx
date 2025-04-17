@@ -250,9 +250,17 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
               <p><strong>部署：</strong>{selectedResearcher.researcher_department_current}</p>
               <p><strong>職位：</strong>{selectedResearcher.researcher_position_current || "―"}</p>
               <p><strong>専門分野：</strong>{selectedResearcher.research_field_pi}</p>
-              <p><strong>キーワード：</strong>{selectedResearcher.keywords_pi}</p>
               <p><strong>過去の所属歴：</strong>{selectedResearcher.researcher_affiliations_past}</p>
+              {/*
+              <p><strong>キーワード：</strong>{selectedResearcher.keywords_pi}</p>
+              */}
             </div>
+            <button
+              onClick={() => router.push(`/researcher/${selectedResearcher.researcher_id}`)}
+              className="w-full py-2 bg-blue-800 text-white rounded hover:bg-blue-500 transition"
+            >
+              詳細を見る
+            </button>
             <button
               onClick={() => setShowInfoModal(false)}
               className="mt-6 w-full py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition"
