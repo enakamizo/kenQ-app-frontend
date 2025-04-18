@@ -43,7 +43,7 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
         const uniqueResearchers = Array.from(
           // new Map(data.map((item: any) => [item.researcher.researcher_id, item.researcher])).values()
           new Map(
-            data.map((item: any) => [
+            data.matchings.map((item: any) => [
               item.researcher.researcher_id,
               {
                 ...item.researcher,
@@ -135,7 +135,7 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
           <tbody>
             {researchers.map((researcher: any) => (
               <tr key={researcher.id} className="border-b">
-                <td className="p-2 whitespace-nowrap">{researcher.researcher_name}</td>
+                <td className="p-2 break-words max-w-[140px]">{researcher.researcher_name}</td>
                 <td className="p-2 break-words">{researcher.researcher_affiliation_current}</td>
                 <td className="p-2 text-center">
                   <button 
