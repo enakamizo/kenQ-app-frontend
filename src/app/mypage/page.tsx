@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 // マッチング結果の型定義
 type MatchingResult = {
@@ -25,12 +26,14 @@ type ProjectMatchingResult = {
 export default function MyPage() {
   const [activeProjects, setActiveProjects] = useState<ProjectMatchingResult[]>([]);
   const [closedProjects, setClosedProjects] = useState<ProjectMatchingResult[]>([]);
+  const router = useRouter();
+
+  // 🔽 useEffectの外に移動！
+  const activeIds = [152, 153, 154];
+  const closedIds = [156, 157, 155];
 
   useEffect(() => {
     const fetchMatchingResults = async () => {
-      const activeIds = [80, 60, 125]; // 実験用に同じID
-      const closedIds = [65, 85, 95];
-
       try {
         const active = await Promise.all(
           activeIds.map(async (id) => {
@@ -86,7 +89,10 @@ export default function MyPage() {
                   </p>
                 </div>
                 <div>
-                  <button className="mt-4 px-3 py-1 bg-gray-300 text-base rounded">
+                  <button
+                    className="mt-4 px-3 py-1 bg-gray-300 text-base rounded"
+                    onClick={() => router.push(`/projects/${activeIds[index]}`)} 
+                  >
                     研究者一覧
                   </button>
                 </div>
@@ -116,7 +122,10 @@ export default function MyPage() {
                   </p>
                 </div>
                 <div>
-                  <button className="mt-4 px-3 py-1 bg-gray-300 text-base rounded">
+                <button
+                    className="mt-4 px-3 py-1 bg-gray-300 text-base rounded"
+                    onClick={() => router.push(`/projects/${closedIds[index]}`)}
+                  >
                     研究者一覧
                   </button>
                 </div>
