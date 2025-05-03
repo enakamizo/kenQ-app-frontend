@@ -48,6 +48,7 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
               {
                 ...item.researcher,
                 matching_reason: item.matching_reason, // ← 🔧ここを追加！
+                matching_status: item.matching_status, // ← これを追加！
               },
             ])
           ).values()
@@ -158,12 +159,16 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
                   <input type="checkbox" className="form-checkbox h-5 w-5 border-gray-400 accent-gray-600 rounded focus:ring-gray-500" />
                 </td>
                 <td className="p-2 text-center">
-                  <input
-                    type="checkbox"
-                    className="form-checkbox h-5 w-5 border-gray-400 accent-gray-600 rounded focus:ring-gray-500"
-                    onChange={() => handleCheckboxChange(researcher.researcher_id)}
-                    checked={selectedResearchers.includes(researcher.researcher_id)}
-                  />
+                  {researcher.matching_status === 1 ? (
+                    <span className="text-gray-400 text-sm">済</span>
+                  ) : (
+                    <input
+                      type="checkbox"
+                      className="form-checkbox h-5 w-5 border-gray-400 accent-gray-600 rounded focus:ring-gray-500"
+                      onChange={() => handleCheckboxChange(researcher.researcher_id)}
+                      checked={selectedResearchers.includes(researcher.researcher_id)}
+                    />
+                  )}
                 </td>
                 <td className="p-2 text-center">
                   <input type="checkbox" className="form-checkbox h-5 w-5 border-gray-400 accent-gray-600 rounded focus:ring-gray-500" />
