@@ -38,11 +38,69 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
 
   const [localFormData, setLocalFormData] = useState<FormDataType>(formData || initialData);
 
+  // ✅ Step 1: モーダル表示と診断結果を管理
+  const [showModal, setShowModal] = useState(false);
+  const [diagnosisResult, setDiagnosisResult] = useState<string | null>(null);
+
   useEffect(() => {
     if (formData) {
       setLocalFormData(formData);
     }
   }, [formData]);
+
+  const handleDiagnosis = async () => {
+    console.log("送信内容", localFormData);
+  
+    // 必須5項目の簡易バリデーション
+    if (
+      !localFormData.category ||
+      !localFormData.title ||
+      !localFormData.background ||
+      !localFormData.industry ||
+      !localFormData.businessDescription
+    ) {
+      alert("必須項目（上段5項目）をすべて入力してください。");
+      return;
+    }
+  
+    try {
+      const response = await fetch("https://app-advanced3-1-cgghbjavdyhdbfeb.canadacentral-01.azurewebsites.net/ai-diagnosis", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          consultation_category: localFormData.category,
+          project_title: localFormData.title,
+          project_content: localFormData.background,
+          industry: localFormData.industry,
+          business_description: localFormData.businessDescription,
+          university: localFormData.university || "",
+          research_field: localFormData.researchField || "",
+          preferred_researcher_level: localFormData.researcherLevel || "",
+          application_deadline:
+            localFormData.deadline && localFormData.deadline.trim() !== ""
+              ? localFormData.deadline
+              : "2099-12-31", // ←★ここが重要
+        }),
+      });
+  
+      if (!response.ok) {
+        const errText = await response.text(); // ←エラーメッセージの中身も取れるように
+        throw new Error("AI診断APIエラー: " + errText);
+      }
+  
+      const result = await response.json();
+      console.log("診断結果", result.message); // ★ここ
+      setDiagnosisResult(result || "診断結果が取得できませんでした");
+      setShowModal(true);
+    } catch (error) {
+      console.error("診断エラー:", error);
+      setDiagnosisResult("診断中にエラーが発生しました");
+      setShowModal(true);
+    }
+  };
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -129,7 +187,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
       </div>
 
       {/* 事業内容 */}
-      <div>
+      <div className="relative">
         <label className="block text-sm font-medium mb-1">事業内容</label>
         <input
           type="text"
@@ -139,6 +197,37 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
           placeholder="事業内容を入力してください"
           className="w-full p-2 border border-gray-300 rounded-lg"
         />
+
+        {/* 入力欄の外側・右下にボタンを配置 */}
+        <div className="flex justify-end mt-2">
+          <button
+            type="button"
+            onClick={() => {
+              alert("AI課題診断を実行します");
+              handleDiagnosis();
+            }}
+            className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-1 px-3 rounded"
+          >
+            AI課題診断
+          </button>
+        </div>
+          {showModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
+            <h2 className="text-xl font-semibold mb-4">AI診断結果</h2>
+            <p className="mb-4 whitespace-pre-wrap max-h-[70vh] overflow-y-auto">{diagnosisResult}</p>
+            <div className="flex justify-end">
+                <button
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  onClick={() => setShowModal(false)}
+                >
+                  閉じる
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
 
       {/* 大学 */}
@@ -216,7 +305,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
       {/* ボタン */}
       <div className="flex justify-center">
         <button type="submit" className="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700">
-          確認する
+          登録内容を確認する
         </button>
       </div>
     </form>
