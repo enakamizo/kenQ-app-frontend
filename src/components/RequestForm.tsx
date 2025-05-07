@@ -140,7 +140,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
 
       {/* 案件のタイトル */}
       <div>
-        <label className="block text-sm font-medium mb-1">案件のタイトル（40文字以内） <span className="text-red-500">*</span></label>
+        <label className="block text-sm font-medium mb-1">案件タイトル（40文字以内） <span className="text-red-500">*</span></label>
         <input
           type="text"
           name="title"
@@ -154,12 +154,12 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
 
       {/* 依頼背景 */}
       <div>
-        <label className="block text-sm font-medium mb-1">依頼背景 <span className="text-red-500">*</span></label>
+        <label className="block text-sm font-medium mb-1">案件内容<span className="text-red-500">*</span></label>
         <textarea
           name="background"
           value={localFormData.background}
           onChange={handleChange}
-          placeholder="案件の背景を記載してください"
+          placeholder="案件内容を記載してください"
           className="w-full p-2 border border-gray-300 rounded-lg"
           rows={4}
         />
@@ -269,25 +269,30 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
 
       {/* 研究者階層 */}
       <div>
-        <label className="block text-sm font-medium mb-1">研究者階層</label>
-        <select
-          name="researcherLevel"
-          value={localFormData.researcherLevel}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded-lg"
-        >
-          <option value="">選択してください</option>
-          <option value="教授">教授</option>
-          <option value="准教授">准教授</option>
-          <option value="助教">助教</option>
-          <option value="講師">講師</option>
-          <option value="助教授">助教授</option>
-          <option value="助手">助手</option>
-          <option value="研究員">研究員</option>
-          <option value="特任助教">特任助教</option>
-          <option value="主任研究員">主任研究員</option>
-          <option value="特任教授">特任教授</option>
-        </select>
+        <label className="block text-sm font-medium mb-1">研究者階層（複数選択可）</label>
+        <div className="space-y-1">
+          {["教授", "准教授", "助教", "講師", "助教授", "助手", "研究員", "特任助教", "主任研究員", "特任教授"].map(level => (
+            <label key={level} className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                name="researcherLevel"
+                value={level}
+                checked={localFormData.researcherLevel.includes(level)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const isChecked = e.target.checked;
+                  const updatedLevels = isChecked
+                    ? [...localFormData.researcherLevel, value]
+                    : localFormData.researcherLevel.filter(item => item !== value);
+
+                  setLocalFormData(prev => ({ ...prev, researcherLevel: updatedLevels }));
+                  setFormData(prev => ({ ...prev, researcherLevel: updatedLevels }));
+                }}
+              />
+              <span>{level}</span>
+            </label>
+          ))}
+        </div>
       </div>
 
       {/* 募集期限 */}

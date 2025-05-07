@@ -40,8 +40,8 @@ export default function ProjectDetails({ projectId }: { projectId: string }) {
         </div>
 
         <div className="mb-4">
-          <p className="text-gray-600 text-sm">背景</p>
-          <p className="text-gray-800 whitespace-pre-wrap">{project.project_content}</p>
+          <p className="text-gray-600 text-sm">案件内容</p>
+          <p className="font-medium whitespace-pre-wrap">{project.project_content}</p>
         </div>
 
         <div className="mb-4">
@@ -51,12 +51,18 @@ export default function ProjectDetails({ projectId }: { projectId: string }) {
 
         <div className="mb-4">
           <p className="text-gray-600 text-sm">研究者階層</p>
-          <p className="font-medium">{project.researcher_level}</p>
+          <p className="font-medium">
+            {Array.isArray(project.preferred_researcher_level)
+              ? project.preferred_researcher_level.join(" / ")
+              : project.preferred_researcher_level?.split(",").map((level: string) => level.trim()).join(" / ")}
+          </p>
         </div>
 
         <div className="mb-4">
           <p className="text-gray-600 text-sm">募集期限</p>
-          <p className="font-medium">{project.application_deadline}</p>
+          <p className="font-medium text-base">
+            {project.application_deadline?.split("T")[0]}
+          </p>
         </div>
       </div>
     </div>

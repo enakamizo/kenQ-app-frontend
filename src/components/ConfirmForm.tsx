@@ -32,7 +32,10 @@ export default function ConfirmForm() {
                         business_description: formData.businessDescription || "未入力", // ✅追加
                         university: formData.university || "未入力",             // ✅追加
                         research_field: formData.researchField || "未選択",
-                        preferred_researcher_level: formData.researcherLevel || "未選択",
+                        //preferred_researcher_level: formData.researcherLevel || "未選択",
+                        preferred_researcher_level: Array.isArray(formData.researcherLevel)
+                            ? formData.researcherLevel.join(", ")
+                            : formData.researcherLevel || "未選択",
                         application_deadline: formData.deadline || "未設定",
                     }),
                 }
@@ -86,13 +89,13 @@ export default function ConfirmForm() {
 
                 {/* 案件のタイトル */}
                 <div className="mb-4">
-                    <label className="block text-sm font-medium mb-1">案件のタイトル（40文字以内）</label>
+                    <label className="block text-sm font-medium mb-1">案件タイトル（40文字以内）</label>
                     <p className="bg-white p-2 border border-gray-300 rounded-md">{formData.title || "未入力"}</p>
                 </div>
 
                 {/* 依頼背景 */}
                 <div className="mb-4">
-                    <label className="block text-sm font-medium mb-1">依頼背景</label>
+                    <label className="block text-sm font-medium mb-1">案件内容</label>
                     <p className="bg-white p-2 border border-gray-300 rounded-md">{formData.background || "未入力"}</p>
                 </div>
 
@@ -123,7 +126,11 @@ export default function ConfirmForm() {
                 {/* 研究者階層 */}
                 <div className="mb-4">
                     <label className="block text-sm font-medium mb-1">研究者階層</label>
-                    <p className="bg-white p-2 border border-gray-300 rounded-md">{formData.researcherLevel || "未選択"}</p>
+                    <p className="bg-white p-2 border border-gray-300 rounded-md">
+                        {Array.isArray(formData.researcherLevel)
+                            ? formData.researcherLevel.join(" / ")
+                            : formData.researcherLevel || "未選択"}
+                    </p>
                 </div>
 
                 {/* 募集期限 */}
@@ -159,7 +166,7 @@ export default function ConfirmForm() {
             {showPopup && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-xs">
-                        <h2 className="text-xl font-bold mb-4">案件内容を登録しました</h2>
+                        <h2 className="text-xl font-bold mb-4">案件を登録しました</h2>
                         <button
                             onClick={handleGoToResearchers}
                             className="w-full py-3 bg-gray-900 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-200"
