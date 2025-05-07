@@ -32,7 +32,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
     businessDescription: "",  // ✅追加
     university: "",           // ✅追加
     researchField: "",
-    researcherLevel: "",
+    researcherLevel: [],
     deadline: "",
   };
 
