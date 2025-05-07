@@ -12,7 +12,7 @@ type FormDataType = {
   businessDescription: string; // ✅追加
   university: string;      // ✅追加
   researchField: string;
-  researcherLevel: string;
+  researcherLevel: string[];
   deadline: string;
 };
 
