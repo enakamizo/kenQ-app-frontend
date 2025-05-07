@@ -16,7 +16,7 @@ export default function RegisterPage() {
     businessDescription: string;
     university: string;
     researchField: string;
-    researcherLevel: string;
+    researcherLevel: string[];
     deadline: string;
   }) => {
     setFormData(data);
