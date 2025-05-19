@@ -97,7 +97,7 @@ export default function MyPage() {
     };
     for (const r of researchers) {
       if (r.matching_status >= 1) {
-        statusCount[r.matching_status]++;
+        statusCount[r.matching_status as 1 | 2 | 3 | 4]++;
       }
     }
     return statusCount;
