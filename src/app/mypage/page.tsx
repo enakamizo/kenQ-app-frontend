@@ -16,6 +16,7 @@ type RecommendedResearcher = {
 type ProjectInfo = {
   project_title: string;
   project_content: string;
+  application_deadline: string; // ← 追加（Date でも OK）
 };
 
 // プロジェクト＋推薦研究者の型
