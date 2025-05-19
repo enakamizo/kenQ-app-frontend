@@ -63,9 +63,18 @@ export default function MyPage() {
 
         console.log(validProjects);
 
-        // 仮ルール（すべて進行中に分類）
-        const active = validProjects;
-        const closed: ProjectWithRecommendations[] = [];
+      const now = new Date();
+      const active: ProjectWithRecommendations[] = [];
+      const closed: ProjectWithRecommendations[] = [];
+
+      validProjects.forEach((project) => {
+        const deadline = new Date(project.project.application_deadline);
+        if (deadline >= now) {
+          active.push(project);
+        } else {
+          closed.push(project);
+        }
+      });
 
         setActiveProjects(active);
         setClosedProjects(closed);
@@ -77,83 +86,145 @@ export default function MyPage() {
     fetchProjects();
   }, []);
 
+  const countStatuses = (researchers: RecommendedResearcher[]) => {
+    const statusCount = {
+      1: 0, // オファー中
+      2: 0, // マッチング中
+      3: 0, // マッチング不成立
+      4: 0, // 逆オファー中
+    };
+    for (const r of researchers) {
+      if (r.matching_status >= 1) {
+        statusCount[r.matching_status]++;
+      }
+    }
+    return statusCount;
+  };
+
+  // 案件の強制非表示（仮）
+  const hiddenIds = [211, 212, 213, 214, 215, 216, 217, 218, 219, 221];
+
   return (
     <div className="p-10">
       <div className="max-w-5xl mx-auto bg-white p-8 rounded-lg shadow">
+
+        {/* ① 見出し */}
         <h1 className="text-2xl font-bold mb-10 text-left">マイページ</h1>
 
-        {/* 進行中案件 */}
+        {/* ② 進行中案件 */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold mb-4 text-left">
-            進行中案件 {activeProjects.length}
+            進行中案件
           </h2>
-          <div className="grid grid-cols-3 gap-4">
-            {activeProjects.map((projectData, index) => (
-              <div
-                key={`active-${projectData.project_id}`}
-                className="border rounded p-4 flex flex-col justify-between h-[180px]"
-              >
-                <div>
-                  <p className="text-base font-bold">No.{index + 1}</p>
-                  <p className="text-base font-semibold mt-1">
-                    {projectData.project.project_title}
-                  </p>
-                  <p className="text-base mt-1">
-                    おすすめ研究者数: {projectData.recommendedResearchers.length}名
-                  </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {activeProjects
+              .filter(projectData => !hiddenIds.includes(projectData.project_id)) // 強制非表示（仮）
+              .map((projectData, index) => {
+              const statusCount = countStatuses(projectData.recommendedResearchers);
+
+              // 締切日までの日数を計算
+              const today = new Date();
+              const deadline = new Date(projectData.project.application_deadline);
+              const diffTime = deadline.getTime() - today.getTime();
+              const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+              return (
+                <div
+                  key={`active-${projectData.project_id}`}
+                  className="border rounded p-4 flex flex-col justify-between"
+                >
+                  <div>
+                    <p className="text-base font-bold">No.{index + 1}</p>
+                    <p className="text-base font-semibold mt-1">
+                      {projectData.project.project_title}
+                    </p>
+                    <p className="text-base mt-1 mb-2">
+                      おすすめ研究者数: {projectData.recommendedResearchers.length}名
+                    </p>
+                    {statusCount[1] > 0 && <p className="text-sm text-gray-600">オファー中: {statusCount[1]}名</p>}
+                    {statusCount[2] > 0 && <p className="text-sm text-gray-600">マッチング中: {statusCount[2]}名</p>}
+                    {statusCount[3] > 0 && <p className="text-sm text-gray-600">マッチング不成立: {statusCount[3]}名</p>}
+                    {statusCount[4] > 0 && <p className="text-sm text-gray-600">逆オファー中: {statusCount[4]}名</p>}
+                    {/* 締切までの日数表示 */}
+                    {daysLeft >= 0 && (
+                      <p className="text-sm text-red-600 mt-2">
+                        締切まであと {daysLeft} 日
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <button
+                      className="mt-4 px-3 py-1 bg-gray-300 text-base rounded"
+                      onClick={() => router.push(`/projects/${projectData.project_id}`)}
+                    >
+                      研究者一覧
+                    </button>
+                  </div>
                 </div>
-                <div>
-                  <button
-                    className="mt-4 px-3 py-1 bg-gray-300 text-base rounded"
-                    onClick={() =>
-                      router.push(`/projects/${projectData.project_id}`)
-                    }
-                  >
-                    研究者一覧
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
-        {/* 終了案件 */}
-        <section>
+        {/* ③ 終了案件 */}
+        <section className="mb-10">
           <h2 className="text-xl font-semibold mb-4 text-left">
-            終了案件 {closedProjects.length}
+            終了案件
           </h2>
-          <div className="grid grid-cols-3 gap-4">
-            {closedProjects.map((projectData, index) => (
-              <div
-                key={`closed-${projectData.project_id}`}
-                className="border rounded p-4 flex flex-col justify-between h-[180px]"
-              >
-                <div>
-                  <p className="text-base font-bold">No.{index + 1}</p>
-                  <p className="text-base font-semibold mt-1">
-                    {projectData.project.project_title}
-                  </p>
-                  <p className="text-base mt-1">
-                    おすすめ研究者数: {projectData.recommendedResearchers.length}名
-                  </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {closedProjects.map((projectData, index) => {
+              const statusCount = countStatuses(projectData.recommendedResearchers);
+
+
+              // 募集期限をフォーマット
+              const deadline = new Date(projectData.project.application_deadline);
+              const formattedDeadline = deadline.toLocaleDateString("ja-JP", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              });
+
+              return (
+                <div
+                  key={`closed-${projectData.project_id}`}
+                  className="border rounded p-4 flex flex-col justify-between"
+                >
+                  <div>
+                    <p className="text-base font-bold">No.{index + 1}</p>
+                    <p className="text-base font-semibold mt-1">
+                      {projectData.project.project_title}
+                    </p>
+                    <p className="text-base mt-1 mb-2">
+                      おすすめ研究者数: {projectData.recommendedResearchers.length}名
+                    </p>
+                    {statusCount[1] > 0 && <p className="text-sm text-gray-600">オファー中: {statusCount[1]}名</p>}
+                    {statusCount[2] > 0 && <p className="text-sm text-gray-600">マッチング中: {statusCount[2]}名</p>}
+                    {statusCount[3] > 0 && <p className="text-sm text-gray-600">マッチング不成立: {statusCount[3]}名</p>}
+                    {statusCount[4] > 0 && <p className="text-sm text-gray-600">逆オファー中: {statusCount[4]}名</p>}
+
+                    {/* 追加部分：終了日（募集期限）を表示 */}
+                    <p className="text-sm text-gray-500 mt-2">募集期限: {formattedDeadline}</p>
+                  </div>
+                  <div>
+                    <button
+                      className="mt-4 px-3 py-1 bg-gray-300 text-base rounded"
+                      onClick={() => router.push(`/projects/${projectData.project_id}`)}
+                    >
+                      研究者一覧
+                    </button>
+                  </div>
                 </div>
-                <div>
-                  <button
-                    className="mt-4 px-3 py-1 bg-gray-300 text-base rounded"
-                    onClick={() =>
-                      router.push(`/projects/${projectData.project_id}`)
-                    }
-                  >
-                    研究者一覧
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
+
       </div>
     </div>
   );
 }
+
 
 

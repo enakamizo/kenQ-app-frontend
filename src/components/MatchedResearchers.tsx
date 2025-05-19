@@ -122,18 +122,28 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
                 <td className="p-2 break-words max-w-[140px]">{researcher.researcher_name}</td>
                 <td className="p-2 break-words">{researcher.researcher_affiliation_current}</td>
                 <td className="p-2 text-center">
-                  <button onClick={() => handleInfoClick(researcher)} className="px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-700">info</button>
+                  <button onClick={() => handleInfoClick(researcher)} className="px-2 py-1 bg-gray-400 text-white rounded hover:bg-gray-600">info</button>
                 </td>
                 <td className="p-2 text-center">
-                  <button className="px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-700" onClick={() => handleShowMatchingReason(researcher.matching_reason)}>why</button>
+                  <button className="px-2 py-1 bg-gray-400 text-white rounded hover:bg-gray-600" onClick={() => handleShowMatchingReason(researcher.matching_reason)}>why</button>
                 </td>
                 <td className="p-2 text-center">
                   <input type="checkbox" className="form-checkbox h-5 w-5 border-gray-400 accent-gray-600 rounded focus:ring-gray-500" />
                 </td>
                 <td className="p-2 text-center">
                   {researcher.matching_status === 0 && (
-                    <button onClick={() => handleCheckboxChange(researcher.researcher_id)} className="px-2 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-800">オファー</button>
+                    <button
+                      onClick={() => handleCheckboxChange(researcher.researcher_id)}
+                      className={`px-2 py-1 text-sm text-white rounded hover:opacity-90 ${
+                        selectedResearchers.includes(researcher.researcher_id)
+                          ? "bg-gray-600"
+                          : "bg-gray-400 hover:bg-gray-600"
+                      }`}
+                    >
+                      オファー
+                    </button>
                   )}
+
                   {researcher.matching_status === 1 && <span className="text-gray-500">オファー中</span>}
                   {researcher.matching_status === 2 && <span className="text-green-600 font-bold">成立</span>}
                   {researcher.matching_status === 3 && <span className="text-gray-500">不成立</span>}
@@ -159,10 +169,10 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
           className={`px-6 py-2 rounded-lg shadow-md transition duration-200 text-lg font-semibold ${
             selectedResearchers.length === 0
               ? "bg-gray-400 text-white cursor-not-allowed"
-              : "bg-gray-600 text-white hover:bg-gray-700"
+              : "bg-gray-400 text-white hover:bg-gray-600"
           }`}
         >
-          一括オファー
+          オファーする
         </button>
       </div>
 

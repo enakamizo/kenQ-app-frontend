@@ -84,6 +84,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
             localFormData.deadline && localFormData.deadline.trim() !== ""
               ? localFormData.deadline
               : "2099-12-31", // ←★ここが重要
+          company_user_id: 1, // ←ログイン中の企業ユーザーID（仮で 1 を設定）
         }),
       });
   
@@ -311,7 +312,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
 
       {/* ボタン */}
       <div className="flex justify-center">
-        <button type="submit" className="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700">
+        <button type="submit" className="bg-gray-400 text-white px-6 py-3 rounded-lg hover:bg-gray-600">
           登録内容を確認する
         </button>
       </div>
