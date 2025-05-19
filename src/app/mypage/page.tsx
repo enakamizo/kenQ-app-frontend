@@ -3,64 +3,78 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-// マッチング結果の型定義
-type MatchingResult = {
+// 推薦研究者の型
+type RecommendedResearcher = {
   researcher: {
     researcher_id: number;
     researcher_name: string;
-    // 必要なら他の項目も追加OK
   };
   matching_reason: string;
 };
 
+// プロジェクト情報の型
 type ProjectInfo = {
   project_title: string;
   project_content: string;
 };
 
-type ProjectMatchingResult = {
+// プロジェクト＋推薦研究者の型
+type ProjectWithRecommendations = {
+  project_id: number;
   project: ProjectInfo;
-  matchings: MatchingResult[];
+  recommendedResearchers: RecommendedResearcher[];
 };
 
 export default function MyPage() {
-  const [activeProjects, setActiveProjects] = useState<ProjectMatchingResult[]>([]);
-  const [closedProjects, setClosedProjects] = useState<ProjectMatchingResult[]>([]);
+  const [activeProjects, setActiveProjects] = useState<ProjectWithRecommendations[]>([]);
+  const [closedProjects, setClosedProjects] = useState<ProjectWithRecommendations[]>([]);
   const router = useRouter();
 
-  // 🔽 useEffectの外に移動！
-  const activeIds = [152, 153, 154];
-  const closedIds = [156, 157, 155];
-
   useEffect(() => {
-    const fetchMatchingResults = async () => {
+    const fetchProjects = async () => {
       try {
-        const active = await Promise.all(
-          activeIds.map(async (id) => {
+        // 1. project_id一覧を取得（ログイン中の会社ユーザーID＝仮で1）
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_AZURE_API_URL}/projects-list?company_user_id=1`
+        );
+        if (!res.ok) throw new Error("プロジェクト一覧の取得に失敗");
+
+        const projectIds: number[] = await res.json();
+
+        // 2. 各 project_id に対して、推薦研究者を取得
+        const all = await Promise.all(
+          projectIds.map(async (id) => {
             const res = await fetch(
               `${process.env.NEXT_PUBLIC_AZURE_API_URL}/matching-results?project_id=${id}`
             );
-            return res.ok ? await res.json() : null;
+            if (!res.ok) return null;
+            const data = await res.json();
+            return {
+              project_id: id,
+              project: data.project,
+              recommendedResearchers: data.matchings,
+            };
           })
         );
 
-        const closed = await Promise.all(
-          closedIds.map(async (id) => {
-            const res = await fetch(
-              `${process.env.NEXT_PUBLIC_AZURE_API_URL}/matching-results?project_id=${id}`
-            );
-            return res.ok ? await res.json() : null;
-          })
+        const validProjects = all.filter(
+          (p): p is ProjectWithRecommendations => p !== null
         );
 
-        setActiveProjects(active.filter((item) => item !== null));
-        setClosedProjects(closed.filter((item) => item !== null));
+        console.log(validProjects);
+
+        // 仮ルール（すべて進行中に分類）
+        const active = validProjects;
+        const closed: ProjectWithRecommendations[] = [];
+
+        setActiveProjects(active);
+        setClosedProjects(closed);
       } catch (err) {
-        console.error("マッチング結果取得エラー", err);
+        console.error("案件情報の取得エラー", err);
       }
     };
 
-    fetchMatchingResults();
+    fetchProjects();
   }, []);
 
   return (
@@ -74,9 +88,9 @@ export default function MyPage() {
             進行中案件 {activeProjects.length}
           </h2>
           <div className="grid grid-cols-3 gap-4">
-          {activeProjects.map((projectData, index) => (
+            {activeProjects.map((projectData, index) => (
               <div
-                key={`active-${index}`}
+                key={`active-${projectData.project_id}`}
                 className="border rounded p-4 flex flex-col justify-between h-[180px]"
               >
                 <div>
@@ -85,13 +99,15 @@ export default function MyPage() {
                     {projectData.project.project_title}
                   </p>
                   <p className="text-base mt-1">
-                    おすすめ研究者数: {projectData.matchings.length}名
+                    おすすめ研究者数: {projectData.recommendedResearchers.length}名
                   </p>
                 </div>
                 <div>
                   <button
                     className="mt-4 px-3 py-1 bg-gray-300 text-base rounded"
-                    onClick={() => router.push(`/projects/${activeIds[index]}`)} 
+                    onClick={() =>
+                      router.push(`/projects/${projectData.project_id}`)
+                    }
                   >
                     研究者一覧
                   </button>
@@ -107,9 +123,9 @@ export default function MyPage() {
             終了案件 {closedProjects.length}
           </h2>
           <div className="grid grid-cols-3 gap-4">
-          {closedProjects.map((projectData, index) => (
+            {closedProjects.map((projectData, index) => (
               <div
-                key={`closed-${index}`}
+                key={`closed-${projectData.project_id}`}
                 className="border rounded p-4 flex flex-col justify-between h-[180px]"
               >
                 <div>
@@ -118,13 +134,15 @@ export default function MyPage() {
                     {projectData.project.project_title}
                   </p>
                   <p className="text-base mt-1">
-                    おすすめ研究者数: {projectData.matchings.length}名
+                    おすすめ研究者数: {projectData.recommendedResearchers.length}名
                   </p>
                 </div>
                 <div>
-                <button
+                  <button
                     className="mt-4 px-3 py-1 bg-gray-300 text-base rounded"
-                    onClick={() => router.push(`/projects/${closedIds[index]}`)}
+                    onClick={() =>
+                      router.push(`/projects/${projectData.project_id}`)
+                    }
                   >
                     研究者一覧
                   </button>
@@ -137,4 +155,5 @@ export default function MyPage() {
     </div>
   );
 }
+
 

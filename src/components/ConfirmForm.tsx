@@ -25,6 +25,7 @@ export default function ConfirmForm() {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
+                        company_user_id: 1, // ← とりあえず追加！
                         project_title: formData.title || "未入力",
                         consultation_category: formData.category || "未選択",
                         project_content: formData.background || "未入力",
