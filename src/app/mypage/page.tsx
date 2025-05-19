@@ -10,6 +10,7 @@ type RecommendedResearcher = {
     researcher_name: string;
   };
   matching_reason: string;
+  matching_status: number; // ← これを追加
 };
 
 // プロジェクト情報の型
