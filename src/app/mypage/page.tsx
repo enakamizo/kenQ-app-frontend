@@ -104,7 +104,7 @@ export default function MyPage() {
   };
 
   // 案件の強制非表示（仮）
-  const hiddenIds = [211, 212, 213, 214, 215, 216, 217, 218, 219, 221];
+  const hiddenIds = [211, 212, 213, 214, 215, 216, 217, 218, 219, 221, 223,224,225];
 
   return (
     <div className="p-10">
