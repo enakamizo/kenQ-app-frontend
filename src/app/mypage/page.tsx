@@ -104,7 +104,7 @@ export default function MyPage() {
   };
 
   // 案件の強制非表示（仮）
-  const hiddenIds = [211, 212, 213, 214, 215, 216, 217, 218, 219, 221, 223,224,225];
+  const hiddenIds = [129, 220, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225];
 
   return (
     <div className="p-10">
@@ -176,9 +176,10 @@ export default function MyPage() {
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {closedProjects.map((projectData, index) => {
+            {closedProjects
+              .filter(projectData => !hiddenIds.includes(projectData.project_id)) // ← これを追加
+              .map((projectData, index) => {
               const statusCount = countStatuses(projectData.recommendedResearchers);
-
 
               // 募集期限をフォーマット
               const deadline = new Date(projectData.project.application_deadline);
