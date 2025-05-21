@@ -47,7 +47,7 @@ const Header = () => {
         <img src="/lamp.png" alt="新着通知" className="h-5 w-5" />
 
         {/* ユーザー名 */}
-        <span>Junior Garcia</span>
+        <span>森明 諭</span>
 
         {/* ユーザー画像 */}
         <img src="/研Q_事業者ユーザ_写真.png" alt="User Avatar" className="w-8 h-8 rounded-full" />
