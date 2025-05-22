@@ -27,51 +27,58 @@ export default function LoginPage() {
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-white">
-            <img src="/研Qロゴ.png" alt="研Q" className="w-124 h-24 mb-6" />
-            <div className="flex flex-col gap-3 w-80">
-                <input
-                    type="email"
-                    placeholder="Your email"
-                    className="border border-gray-300 rounded px-4 py-2"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    className="border border-gray-300 rounded px-4 py-2"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <button
-                    onClick={handleLogin}
-                    className="bg-gray-700 text-white rounded py-2 font-semibold hover:bg-gray-800"
-                >
-                    Log In
-                </button>
-                <p className="text-center text-sm text-gray-500 mt-2">パスワードを忘れた方はこちら</p>
-                <div className="flex items-center justify-center mt-4">
-                    <hr className="w-1/4 border-gray-300" />
-                    <span className="mx-2 text-gray-500 text-sm">or</span>
-                    <hr className="w-1/4 border-gray-300" />
-                </div>
-                <div className="flex justify-center gap-6 mt-4">
-                <img
-                    src="/Google.png"
-                    alt="Google login"
-                    className="w-24 h-auto cursor-pointer" // 約64px
-                    onClick={() => alert("Googleログイン未実装")}
-                />
-                <img
-                    src="/Facebook.png"
-                    alt="Facebook login"
-                    className="w-24 h-auto cursor-pointer"
-                    onClick={() => alert("Facebookログイン未実装")}
-                />
-                </div>
-                <p className="text-center text-sm text-gray-500 mt-4">
+        <img src="/研Qロゴ.png" alt="研Q" className="w-[200px] h-24 mb-12" />
+        <div className="flex flex-col gap-6 w-full max-w-md">
+            <input
+            type="email"
+            placeholder="Your email"
+            className="border border-gray-400 rounded-md px-6 py-4 text-xl shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+            type="password"
+            placeholder="Password"
+            className="border border-gray-400 rounded-md px-6 py-4 text-xl shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+            onClick={handleLogin}
+            className="bg-gray-700 text-white rounded py-4 text-xl font-semibold hover:bg-gray-800"
+            >
+            Log In
+            </button>
+                <p className="text-center text-base text-gray-500 mt-3">
+                    パスワードを忘れた方は{" "}
+                    <a
+                        href="#"
+                        onClick={(e) => e.preventDefault()}
+                        className="text-blue-600 font-medium cursor-default"
+                    >
+                    こちら
+                </a>
+                </p>
+            <div className="flex items-center justify-center mt-3">
+            <hr className="w-1/4 border-gray-300" />
+            <span className="mx-3 text-gray-500 text-base">or</span>
+            <hr className="w-1/4 border-gray-300" />
+            </div>
+            <div className="flex justify-center gap-8 mt-3">
+            <img
+                src="/Google.png"
+                alt="Google login"
+                className="w-28 h-auto cursor-pointer"
+                onClick={() => alert("Googleログイン未実装")}
+            />
+            <img
+                src="/Facebook.png"
+                alt="Facebook login"
+                className="w-28 h-auto cursor-pointer"
+                onClick={() => alert("Facebookログイン未実装")}
+            />
+            </div>
+                <p className="text-center text-base text-gray-500 mt-3">
                     アカウントをお持ちでない方は{" "}
-                    <a href="/register" className="text-blue-600 font-medium">新規登録</a>
+                    <a href="#" onClick={(e) => e.preventDefault()} className="text-blue-600 font-medium">
+                        新規登録
+                    </a>
                 </p>
             </div>
         </div>

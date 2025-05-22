@@ -202,7 +202,10 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
         />
 
         {/* 入力欄の外側・右下にボタンを配置 */}
-        <div className="flex justify-end mt-2">
+        <div className="flex justify-end items-center mt-2 space-x-2">
+          <p className="text-xs text-gray-800">
+            案件登録内容のブラッシュアップにAI課題診断機能をご活用ください。
+          </p>
           <button
             type="button"
             onClick={() => {
