@@ -11,6 +11,7 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
   const [selectedReason, setSelectedReason] = useState("");
   const [selectedResearcher, setSelectedResearcher] = useState<any | null>(null);
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const [projectTitle, setProjectTitle] = useState("");
 
   const router = useRouter();
 
@@ -32,6 +33,12 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
         }
 
         const data = await response.json();
+
+        console.log("🔍 APIレスポンス", data);
+        console.log("🔍 プロジェクトタイトル:", data.matchings?.[0]?.project?.project_title);
+
+        setProjectTitle(data.project?.project_title || "");
+
         const uniqueResearchers = Array.from(
           new Map(
             data.matchings.map((item: any) => [
@@ -98,9 +105,76 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
     }
   };
 
+  // CSV出力
+  const handleExportCSV = () => {
+    if (researchers.length === 0) return;
+
+    const headers = [
+      "研究者ID",
+      "氏名",
+      "氏名（ローマ字）",
+      "ふりがな",
+      "所属",
+      "部署",
+      "職位",
+      "専門分野",
+      "キーワード",
+      "マッチング理由",
+    ];
+
+    const rows = researchers.map((r) => [
+      r.researcher_id,
+      r.researcher_name,
+      r.researcher_name_alphabet,
+      r.researcher_name_kana,
+      r.researcher_affiliation_current,
+      r.researcher_department_current,
+      r.researcher_position_current,
+      r.research_field_pi,
+      r.keywords_pi,
+      r.matching_reason,
+    ]);
+
+    const csvContent =
+      [headers, ...rows]
+        .map((row) =>
+          row
+            .map((cell) =>
+              `"${String(cell).replace(/"/g, '""')}"`
+            )
+            .join(",")
+        )
+        .join("\n");
+
+    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+
+    const sanitizedTitle =
+      projectTitle && projectTitle.trim() !== ""
+        ? "_" + projectTitle.replace(/[\\/:*?"<>|]/g, "_").slice(0, 20)
+        : "";
+
+    link.setAttribute("download", `研究者一覧_${projectId}${sanitizedTitle}.csv`);
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
-    <div className="p-6 bg-gray-50 rounded-lg shadow-md mt-6">
-      <h3 className="text-lg font-bold mb-4">おすすめの研究者リスト</h3>
+    <div className="relative mb-4 mt-6">
+      <div className="inline-flex items-center gap-3">
+        <h3 className="text-lg font-bold">おすすめの研究者リスト</h3>
+        <button
+          onClick={handleExportCSV}
+          className="px-4 py-1 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition text-sm font-semibold"
+        >
+          CSV出力
+        </button>
+      </div>
+
       <div className="bg-white p-4 rounded-lg shadow">
         <table className="w-full text-sm text-left border-collapse table-fixed">
           <thead className="bg-gray-100 text-xs">
@@ -174,6 +248,7 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
         >
           オファーする
         </button>
+
       </div>
 
       {showPopup && (
