@@ -88,6 +88,37 @@ export default function MyPage() {
     fetchProjects();
   }, []);
 
+  const deleteProject = async (projectId: number) => {
+    if (!confirm("本当にこの案件を削除しますか？")) return;
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_AZURE_API_URL}/delete-project/${projectId}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        throw new Error("削除に失敗しました");
+      }
+
+      // 成功したらUIからも削除
+      //setActiveProjects(prev => prev.filter(p => p.project_id !== projectId));
+      //setClosedProjects(prev => prev.filter(p => p.project_id !== projectId));
+
+      // 削除対象を除外して再セット
+      setActiveProjects((prev) => {
+        return prev.filter((project) => project.project_id !== projectId);
+      });
+      setClosedProjects((prev) => {
+        return prev.filter((project) => project.project_id !== projectId);
+      });
+
+      alert("案件を削除しました");
+    } catch (err) {
+      console.error("削除エラー:", err);
+      alert("削除に失敗しました");
+    }
+  };
+
   const countStatuses = (researchers: RecommendedResearcher[]) => {
     const statusCount = {
       1: 0, // オファー中
@@ -104,7 +135,7 @@ export default function MyPage() {
   };
 
   // 案件の強制非表示（仮）
-  const hiddenIds = [129, 220, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 231, 232, 233, 234, 235, 236, 237,238,  239, 240, 241, 242, 243, 244, 245,246,247,248,249,250,251,252,253,254,255,256,257,258,262,263];
+  // const hiddenIds = [129, 220, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 231, 232, 233, 234, 235, 236, 237,238,  239, 240, 241, 242, 243, 244, 245,246,247,248,249,250,251,252,253,254,255,256,257,258,262,263];
 
   return (
     <div className="p-10">
@@ -121,7 +152,7 @@ export default function MyPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {activeProjects
-              .filter(projectData => !hiddenIds.includes(projectData.project_id)) // 強制非表示（仮）
+              //.filter(projectData => !hiddenIds.includes(projectData.project_id)) // 強制非表示（仮）
               .map((projectData, index) => {
               const statusCount = countStatuses(projectData.recommendedResearchers);
 
@@ -155,12 +186,18 @@ export default function MyPage() {
                       </p>
                     )}
                   </div>
-                  <div>
+                  <div className="mt-4 flex justify-between items-center">
                     <button
-                      className="mt-4 px-3 py-1 bg-gray-300 text-base rounded"
+                      className="px-3 py-1 bg-gray-300 text-base rounded"
                       onClick={() => router.push(`/projects/${projectData.project_id}`)}
                     >
                       研究者一覧
+                    </button>
+                    <button
+                      className="text-sm text-gray-600 hover:underline"
+                      onClick={() => deleteProject(projectData.project_id)}
+                    >
+                      削除
                     </button>
                   </div>
                 </div>
@@ -177,7 +214,7 @@ export default function MyPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {closedProjects
-              .filter(projectData => !hiddenIds.includes(projectData.project_id)) // ← これを追加
+              //.filter(projectData => !hiddenIds.includes(projectData.project_id)) // ← これを追加
               .map((projectData, index) => {
               const statusCount = countStatuses(projectData.recommendedResearchers);
 
@@ -210,12 +247,18 @@ export default function MyPage() {
                     {/* 追加部分：終了日（募集期限）を表示 */}
                     <p className="text-sm text-gray-500 mt-2">募集期限: {formattedDeadline}</p>
                   </div>
-                  <div>
+                  <div className="mt-4 flex justify-between items-center">
                     <button
-                      className="mt-4 px-3 py-1 bg-gray-300 text-base rounded"
+                      className="px-3 py-1 bg-gray-300 text-base rounded"
                       onClick={() => router.push(`/projects/${projectData.project_id}`)}
                     >
                       研究者一覧
+                    </button>
+                    <button
+                      className="text-sm text-gray-600 hover:underline"
+                      onClick={() => deleteProject(projectData.project_id)}
+                    >
+                      削除
                     </button>
                   </div>
                 </div>
