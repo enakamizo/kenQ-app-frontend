@@ -153,10 +153,11 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
 
     const sanitizedTitle =
       projectTitle && projectTitle.trim() !== ""
-        ? "_" + projectTitle.replace(/[\\/:*?"<>|]/g, "_").slice(0, 20)
-        : "";
+        ? "_" + projectTitle.replace(/[\\/:*?"<>|]/g, "_").slice(0, 30)
+        : "無題";
 
-    link.setAttribute("download", `研究者一覧_${projectId}${sanitizedTitle}.csv`);
+    //link.setAttribute("download", `研究者一覧_${projectId}${sanitizedTitle}.csv`);
+    link.setAttribute("download", `研究者一覧_${sanitizedTitle}.csv`);
 
     document.body.appendChild(link);
     link.click();
