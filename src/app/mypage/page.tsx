@@ -25,6 +25,7 @@ type ProjectWithRecommendations = {
   project_id: number;
   project: ProjectInfo;
   recommendedResearchers: RecommendedResearcher[];
+  matched_date: string;
 };
 
 export default function MyPage() {
@@ -55,6 +56,7 @@ export default function MyPage() {
               project_id: id,
               project: data.project,
               recommendedResearchers: data.matchings,
+              matched_date: data.matchings?.[0]?.matched_date || "",
             };
           })
         );
@@ -179,6 +181,13 @@ export default function MyPage() {
                     {statusCount[2] > 0 && <p className="text-sm text-gray-600">マッチング中: {statusCount[2]}名</p>}
                     {statusCount[3] > 0 && <p className="text-sm text-gray-600">マッチング不成立: {statusCount[3]}名</p>}
                     {statusCount[4] > 0 && <p className="text-sm text-gray-600">逆オファー中: {statusCount[4]}名</p>}
+                    <p className="text-sm text-gray-500 mt-1">
+                      登録日: {new Date(projectData.matched_date).toLocaleDateString("ja-JP", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
                     {/* 締切までの日数表示 */}
                     {daysLeft >= 0 && (
                       <p className="text-sm text-red-600 mt-2">
@@ -243,7 +252,13 @@ export default function MyPage() {
                     {statusCount[2] > 0 && <p className="text-sm text-gray-600">マッチング中: {statusCount[2]}名</p>}
                     {statusCount[3] > 0 && <p className="text-sm text-gray-600">マッチング不成立: {statusCount[3]}名</p>}
                     {statusCount[4] > 0 && <p className="text-sm text-gray-600">逆オファー中: {statusCount[4]}名</p>}
-
+                    <p className="text-sm text-gray-500 mt-1">
+                      登録日: {new Date(projectData.matched_date).toLocaleDateString("ja-JP", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
                     {/* 追加部分：終了日（募集期限）を表示 */}
                     <p className="text-sm text-gray-500 mt-2">募集期限: {formattedDeadline}</p>
                   </div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function MatchedResearchers({ projectId }: { projectId: string }) {
+  console.log("📌 現在の project_id:", projectId); 
   const [researchers, setResearchers] = useState<any[]>([]);
   const [selectedResearchers, setSelectedResearchers] = useState<string[]>([]);
   const [showPopup, setShowPopup] = useState(false);
