@@ -32,64 +32,94 @@ type ProjectWithRecommendations = {
 export default function MyPage() {
   const [activeProjects, setActiveProjects] = useState<ProjectWithRecommendations[]>([]);
   const [closedProjects, setClosedProjects] = useState<ProjectWithRecommendations[]>([]);
+  const [isLoading, setIsLoading] = useState(true); // しばらくお待ちください。表示のため追加
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
+    // 描画完了後に fetchProjects を呼び出す
+    setTimeout(() => {
     const fetchProjects = async () => {
-      try {
-        // 1. project_id一覧を取得（ログイン中の会社ユーザーID＝仮で1）
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_AZURE_API_URL}/projects-list?company_user_id=1`
-        );
-        if (!res.ok) throw new Error("プロジェクト一覧の取得に失敗");
+      console.log("🔄 プロジェクト取得中...");
 
-        const projectIds: number[] = await res.json();
+        try {
+          // 1. project_id一覧を取得（ログイン中の会社ユーザーID＝仮で1）
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_AZURE_API_URL}/projects-list?company_user_id=1`
+          );
+          if (!res.ok) throw new Error("プロジェクト一覧の取得に失敗");
 
-        // 2. 各 project_id に対して、推薦研究者を取得
-        const all = await Promise.all(
-          projectIds.map(async (id) => {
-            const res = await fetch(
-              `${process.env.NEXT_PUBLIC_AZURE_API_URL}/matching-results?project_id=${id}`
-            );
-            if (!res.ok) return null;
-            const data = await res.json();
-            return {
-              project_id: id,
-              project: data.project,
-              recommendedResearchers: data.matchings,
-              matched_date: data.matchings?.[0]?.matched_date || "",
-            };
-          })
-        );
+          const projectIds: number[] = await res.json();
 
-        const validProjects = all.filter(
-          (p): p is ProjectWithRecommendations => p !== null
-        );
+          // 2. 各 project_id に対して、推薦研究者を取得
+          const all = await Promise.all(
+            projectIds.map(async (id) => {
+              const res = await fetch(
+                `${process.env.NEXT_PUBLIC_AZURE_API_URL}/matching-results?project_id=${id}`
+              );
+              if (!res.ok) return null;
+              const data = await res.json();
+              return {
+                project_id: id,
+                project: data.project,
+                recommendedResearchers: data.matchings,
+                matched_date: data.matchings?.[0]?.matched_date || "",
+              };
+            })
+          );
+
+          const validProjects = all.filter(
+            (p): p is ProjectWithRecommendations => p !== null
+          );
 
         console.log(validProjects);
 
-      const now = new Date();
-      const active: ProjectWithRecommendations[] = [];
-      const closed: ProjectWithRecommendations[] = [];
+        const now = new Date();
+        const active: ProjectWithRecommendations[] = [];
+        const closed: ProjectWithRecommendations[] = [];
 
-      validProjects.forEach((project) => {
-        const deadline = new Date(project.project.application_deadline);
-        if (deadline >= now) {
-          active.push(project);
-        } else {
-          closed.push(project);
-        }
-      });
+        validProjects.forEach((project) => {
+          const deadline = new Date(project.project.application_deadline);
+          if (deadline >= now) {
+            active.push(project);
+          } else {
+            closed.push(project);
+          }
+        });
 
         setActiveProjects(active);
         setClosedProjects(closed);
-      } catch (err) {
-        console.error("案件情報の取得エラー", err);
-      }
-    };
+        } catch (err) {
+          console.error("案件情報の取得エラー", err);
+          setError("データの取得に失敗しました。");
+        } finally {
+          setIsLoading(false); // ← 読み込み完了
+        }
+      };
 
-    fetchProjects();
+      fetchProjects();
+    }, 0);
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="p-10">
+        <div className="max-w-5xl mx-auto bg-white p-8 rounded-lg shadow">
+          <p className="text-center text-gray-500 text-lg">しばらくお待ちください。</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-10">
+        <div className="max-w-5xl mx-auto bg-white p-8 rounded-lg shadow">
+          <p className="text-center text-red-600 text-lg">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   const deleteProject = async (projectId: number) => {
     if (!confirm("本当にこの案件を削除しますか？")) return;

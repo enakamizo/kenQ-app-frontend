@@ -26,7 +26,13 @@ export default function ProjectDetails({ projectId }: { projectId: string }) {
   }, [projectId]);
 
   if (!project) {
-    return <p className="text-center text-gray-500">しばらくお待ちください。</p>;
+    return (
+      <div className="p-10">
+        <div className="max-w-5xl mx-auto bg-white p-8 rounded-lg shadow">
+          <p className="text-center text-gray-500 text-lg">しばらくお待ちください。</p>
+        </div>
+      </div>
+    );
   }
 
   return (
