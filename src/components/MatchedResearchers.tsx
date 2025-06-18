@@ -192,6 +192,7 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
             <tr className="border-b">
               <th className="p-2 w-[125px] whitespace-nowrap text-base">名 前</th>
               <th className="p-2 min-w-[280px] break-words text-base">所 属</th>
+              <th className="p-2 w-[120px] text-left text-sm">部署<br />職位</th>
               <th className="p-2 w-[90px] text-center text-sm">研究者<br />情報</th>
               <th className="p-2 w-[90px] text-center text-sm">マッチング<br />理由</th>
               <th className="p-2 w-[70px] text-center text-lg">✔</th>
@@ -205,7 +206,13 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
             {researchers.map((researcher: any) => (
               <tr key={researcher.researcher_id} className="border-b">
                 <td className="p-2 break-words max-w-[140px]">{researcher.researcher_name}</td>
-                <td className="p-2 break-words">{researcher.researcher_affiliation_current}</td>
+                <td className="p-2 pr-1 break-words whitespace-nowrap text-sm">
+                  {researcher.researcher_affiliation_current}
+                </td>
+                <td className="p-2 pl-1 text-left align-middle text-sm leading-tight break-words max-w-[150px]">
+                  <div className="text-xs text-gray-600 break-words">{researcher.researcher_department_current || "―"}</div>
+                  <div className="font-medium">{researcher.researcher_position_current || "―"}</div>
+                </td>
                 <td className="p-2 text-center">
                   <button onClick={() => handleInfoClick(researcher)} className="px-2 py-1 bg-gray-400 text-white rounded hover:bg-gray-600">info</button>
                 </td>
