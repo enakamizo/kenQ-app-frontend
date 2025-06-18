@@ -124,9 +124,9 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
     <form onSubmit={handleSubmit} className="space-y-6 bg-gray-50 p-6 rounded-lg shadow-md">
       {/* 依頼のカテゴリー */}
       <div>
-        <label className="block text-sm font-medium mb-1">依頼のカテゴリー <span className="text-red-500">*</span></label>
+        <label className="block text-sm font-medium mb-1">依頼カテゴリー <span className="text-red-500">*</span></label>
         <div className="space-y-2">
-          {["研究分野のヒアリング", "アドバイス・業務改善の相談（壁打ち程度）", "コンサルティング・共同研究の相談"].map((option) => (
+          {["ヒアリング", "壁打ち", "共同研究開発"].map((option) => (
             <label key={option} className="flex items-center space-x-2">
               <input
                 type="radio"
