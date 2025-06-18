@@ -37,6 +37,7 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
 
         console.log("🔍 APIレスポンス", data);
         console.log("🔍 プロジェクトタイトル:", data.matchings?.[0]?.project?.project_title);
+        console.log("🔍 サンプル研究者データ:", data.matchings?.[0]?.researcher); 
 
         setProjectTitle(data.project?.project_title || "");
 
@@ -46,6 +47,7 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
               item.researcher.researcher_id,
               {
                 ...item.researcher,
+                researcher_number: item.researcher.researcher_number, 
                 matching_reason: item.matching_reason,
                 matching_status: item.matching_status,
                 hasNewMessage: item.has_new_message || false,
@@ -121,9 +123,15 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
       "専門分野",
       "キーワード",
       "マッチング理由",
+      "科研アドレス"
     ];
 
-    const rows = researchers.map((r) => [
+    //const rows = researchers.map((r) => [
+    const rows = researchers.map((r) => {
+      const kakenNumber = r.researcher_number; // ← researcherオブジェクトに含まれていると仮定
+      const kakenUrl = kakenNumber ? `https://nrid.nii.ac.jp/ja/nrid/10000${kakenNumber}` : "";
+
+      return [
       r.researcher_id,
       r.researcher_name,
       r.researcher_name_alphabet,
@@ -134,7 +142,8 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
       r.research_field_pi,
       r.keywords_pi,
       r.matching_reason,
-    ]);
+      kakenUrl, //
+    ]});
 
     const csvContent =
       [headers, ...rows]

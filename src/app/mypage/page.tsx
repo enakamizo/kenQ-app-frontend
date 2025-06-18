@@ -17,7 +17,8 @@ type RecommendedResearcher = {
 type ProjectInfo = {
   project_title: string;
   project_content: string;
-  application_deadline: string; // ← 追加（Date でも OK）
+  application_deadline: string;
+  registration_date: string;
 };
 
 // プロジェクト＋推薦研究者の型
@@ -182,11 +183,13 @@ export default function MyPage() {
                     {statusCount[3] > 0 && <p className="text-sm text-gray-600">マッチング不成立: {statusCount[3]}名</p>}
                     {statusCount[4] > 0 && <p className="text-sm text-gray-600">逆オファー中: {statusCount[4]}名</p>}
                     <p className="text-sm text-gray-500 mt-1">
-                      登録日: {new Date(projectData.matched_date).toLocaleDateString("ja-JP", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
+                      登録日: {projectData.project.registration_date
+                        ? new Date(projectData.project.registration_date).toLocaleDateString("ja-JP", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })
+                        : "なし"}
                     </p>
                     {/* 締切までの日数表示 */}
                     {daysLeft >= 0 && (
@@ -253,11 +256,13 @@ export default function MyPage() {
                     {statusCount[3] > 0 && <p className="text-sm text-gray-600">マッチング不成立: {statusCount[3]}名</p>}
                     {statusCount[4] > 0 && <p className="text-sm text-gray-600">逆オファー中: {statusCount[4]}名</p>}
                     <p className="text-sm text-gray-500 mt-1">
-                      登録日: {new Date(projectData.matched_date).toLocaleDateString("ja-JP", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
+                      登録日: {projectData.project.registration_date
+                        ? new Date(projectData.project.registration_date).toLocaleDateString("ja-JP", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })
+                        : "なし"}
                     </p>
                     {/* 追加部分：終了日（募集期限）を表示 */}
                     <p className="text-sm text-gray-500 mt-2">募集期限: {formattedDeadline}</p>
