@@ -50,7 +50,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
 
   const handleDiagnosis = async () => {
     console.log("送信内容", localFormData);
-  
+
     // 必須5項目の簡易バリデーション
     if (
       !localFormData.category ||
@@ -62,7 +62,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
       alert("必須項目（上段5項目）をすべて入力してください。");
       return;
     }
-  
+
     try {
       const response = await fetch("https://app-advanced3-1-cgghbjavdyhdbfeb.canadacentral-01.azurewebsites.net/ai-diagnosis", {
         method: "POST",
@@ -87,12 +87,12 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
           company_user_id: 1, // ←ログイン中の企業ユーザーID（仮で 1 を設定）
         }),
       });
-  
+
       if (!response.ok) {
         const errText = await response.text(); // ←エラーメッセージの中身も取れるように
         throw new Error("AI診断APIエラー: " + errText);
       }
-  
+
       const result = await response.json();
       console.log("診断結果", result.message); // ★ここ
       setDiagnosisResult(result || "診断結果が取得できませんでした");
@@ -103,7 +103,6 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
       setShowModal(true);
     }
   };
-  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -122,40 +121,43 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 bg-gray-50 p-6 rounded-lg shadow-md">
-      {/* 依頼のカテゴリー */}
-      <div>
-        <label className="block text-sm font-medium mb-1">依頼カテゴリー <span className="text-red-500">*</span></label>
-        <div className="space-y-2">
-          {["ヒアリング", "壁打ち", "共同研究開発"].map((option) => (
-            <label key={option} className="flex items-center space-x-2">
-              <input
-                type="radio"
-                name="category"
-                value={option}
-                onChange={handleChange}
-                checked={localFormData.category === option}
-              />
-              <span>{option}</span>
-            </label>
-          ))}
+
+      {/* === 上段ブロック: カテゴリー〜AI課題診断 === */}
+      <div className="bg-gray-50 p-6 rounded-lg shadow-md space-y-6 border border-blue-300">
+        {/* 依頼のカテゴリー */}
+        <div>
+          <label className="block text-sm font-medium mb-1">依頼カテゴリー <span className="text-red-500">*</span></label>
+          <div className="space-y-2">
+            {["ヒアリング", "壁打ち", "共同研究開発"].map((option) => (
+              <label key={option} className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="category"
+                  value={option}
+                  onChange={handleChange}
+                  checked={localFormData.category === option}
+                />
+                <span>{option}</span>
+              </label>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* 案件のタイトル */}
-      <div>
-        <label className="block text-sm font-medium mb-1">案件タイトル（40文字以内） <span className="text-red-500">*</span></label>
-        <input
-          type="text"
-          name="title"
-          value={localFormData.title}
-          onChange={handleChange}
-          maxLength={40}
-          placeholder="タイトルを入力してください"
-          className="w-full p-2 border border-gray-300 rounded-lg"
-        />
-      </div>
+        {/* 案件のタイトル */}
+        <div>
+          <label className="block text-sm font-medium mb-1">案件タイトル（40文字以内） <span className="text-red-500">*</span></label>
+          <input
+            type="text"
+            name="title"
+            value={localFormData.title}
+            onChange={handleChange}
+            maxLength={40}
+            placeholder="タイトルを入力してください"
+            className="w-full p-2 border border-gray-300 rounded-lg"
+          />
+        </div>
 
-      {/* 依頼背景 */}
+      {/* 案件内容 */}
       <div>
         <label className="block text-sm font-medium mb-1">案件内容<span className="text-red-500">*</span></label>
         <textarea
@@ -204,25 +206,26 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
         {/* 入力欄の外側・右下にボタンを配置 */}
         <div className="flex justify-end items-center mt-2 space-x-2">
           <p className="text-xs text-gray-800">
-            案件登録内容のブラッシュアップにAI課題診断機能をご活用ください。
+            案件登録内容のブラッシュアップにAIアシスト機能をご活用ください。
           </p>
           <button
             type="button"
             onClick={() => {
-              alert("AI課題診断を実行します");
+              alert("AIアシスト機能を実行します");
               handleDiagnosis();
             }}
             className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-1 px-3 rounded"
           >
-            AI課題診断
+            案件入力AIアシスト
           </button>
         </div>
-          {showModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+
+        {showModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
-            <h2 className="text-xl font-semibold mb-4">AI診断結果</h2>
-            <p className="mb-4 whitespace-pre-wrap max-h-[70vh] overflow-y-auto">{diagnosisResult}</p>
-            <div className="flex justify-end">
+              <h2 className="text-xl font-semibold mb-4">AI診断結果</h2>
+              <p className="mb-4 whitespace-pre-wrap max-h-[70vh] overflow-y-auto">{diagnosisResult}</p>
+              <div className="flex justify-end">
                 <button
                   className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                   onClick={() => setShowModal(false)}
@@ -233,9 +236,11 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
             </div>
           </div>
         )}
-
       </div>
+    </div>
 
+    {/* === 下段ブロック: 大学〜確認ボタン === */}
+    
       {/* 大学 */}
       <div>
         <label className="block text-sm font-medium mb-1">大学</label>
@@ -249,7 +254,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
         />
       </div>
 
-      {/* 研究分野 */}
+     {/* 研究分野 */}
       <div>
         <label className="block text-sm font-medium mb-1">研究分野</label>
         <select
@@ -319,6 +324,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
           登録内容を確認する
         </button>
       </div>
+
     </form>
   );
 }
