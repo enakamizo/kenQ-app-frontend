@@ -38,7 +38,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
 
   const [localFormData, setLocalFormData] = useState<FormDataType>(formData || initialData);
   const [loading, setLoading] = useState(false); // ←診断中に「しばらくお待ちください。」を表示するため
-
+  const [validationError, setValidationError] = useState<string | null>(null); // ←AIアシストのため５つの項目すべてに入力してもらう注意を表示するため
 
   // ✅ Step 1: モーダル表示と診断結果を管理
   const [showModal, setShowModal] = useState(false);
@@ -61,7 +61,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
       !localFormData.industry ||
       !localFormData.businessDescription
     ) {
-      alert("必須項目（上段5項目）をすべて入力してください。");
+      setValidationError("必須項目（上段5項目）をすべて入力してください。");
       return;
     }
 
@@ -217,7 +217,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
           <button
             type="button"
             onClick={() => {
-              alert("AIアシスト機能を実行します");
+              //alert("AIアシスト機能を実行します");
               handleDiagnosis();
             }}
             className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-1 px-3 rounded"
@@ -267,6 +267,20 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
                   d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                 ></path>
               </svg>
+            </div>
+          </div>
+        )}
+
+        {validationError && (
+          <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
+              <p className="text-lg font-medium mb-4">{validationError}</p>
+              <button
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                onClick={() => setValidationError(null)}
+              >
+                OK
+              </button>
             </div>
           </div>
         )}
