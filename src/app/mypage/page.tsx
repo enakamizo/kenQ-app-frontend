@@ -201,10 +201,10 @@ export default function MyPage() {
 
   return (
     <div className="p-10">
-      <div className="max-w-5xl mx-auto bg-white p-8 rounded-lg shadow">
+      <div className="max-w-5xl mx-auto bg-white p-8 rounded-lg">
 
         {/* ① 見出し */}
-        <h1 className="text-2xl font-bold mb-10 text-left">マイページ</h1>
+        <h1 className="text-3xl font-bold mb-10 text-left">マイページ</h1>
 
         {/* ② 進行中案件 */}
         <section className="mb-10">
@@ -259,7 +259,7 @@ export default function MyPage() {
                   </div>
                   <div className="mt-4 flex justify-between items-center">
                     <button
-                      className="px-3 py-1 bg-gray-300 text-base rounded"
+                      className="px-3 py-1 bg-gray-400 hover:bg-gray-500 text-white text-base rounded"
                       onClick={() => router.push(`/projects/${projectData.project_id}`)}
                     >
                       研究者一覧
@@ -331,7 +331,7 @@ export default function MyPage() {
                   </div>
                   <div className="mt-4 flex justify-between items-center">
                     <button
-                      className="px-3 py-1 bg-gray-300 text-base rounded"
+                      className="px-3 py-1 bg-gray-400 hover:bg-gray-500 text-white text-base rounded"
                       onClick={() => router.push(`/projects/${projectData.project_id}`)}
                     >
                       研究者一覧

@@ -131,7 +131,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-gray-50 p-6 rounded-lg shadow-md">
+    <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg">
 
       {/* === 上段ブロック: カテゴリー〜AI課題診断 === */}
       <div className="bg-gray-50 p-6 rounded-lg shadow-md space-y-6 border border-blue-300">
@@ -225,7 +225,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
               //alert("AIアシスト機能を実行します");
               handleDiagnosis();
             }}
-            className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-1 px-3 rounded"
+            className="bg-blue-400 hover:bg-blue-500 text-white text-sm font-semibold py-1 px-3 rounded"
           >
             案件入力AIアシスト
           </button>
@@ -238,7 +238,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
               <p className="mb-4 whitespace-pre-wrap max-h-[70vh] overflow-y-auto">{diagnosisResult}</p>
               <div className="flex justify-end">
                 <button
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  className="px-4 py-2 bg-blue-400 text-white font-semibold rounded hover:bg-blue-500"
                   onClick={() => setShowModal(false)}
                 >
                   閉じる
@@ -281,7 +281,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
             <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
               <p className="text-lg font-medium mb-4">{validationError}</p>
               <button
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                className="px-4 py-2 bg-blue-400 text-white font-semibold rounded hover:bg-blue-500"
                 onClick={() => setValidationError(null)}
               >
                 OK
@@ -332,7 +332,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
       </div>
 
       {/* 研究者階層 */}
-      <div>
+      <div className="p-4 rounded-lg border border-gray-300">
         <label className="block text-sm font-medium mb-1">研究者階層（複数選択可）</label>
 
         {/* 横並び全体ラップ */}
@@ -396,7 +396,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
 
       {/* ボタン */}
       <div className="flex justify-center">
-        <button type="submit" className="bg-gray-400 text-white px-6 py-3 rounded-lg hover:bg-gray-600">
+        <button type="submit" className="bg-gray-400 text-white font-semibold px-6 py-3 rounded-lg hover:bg-gray-500">
           登録内容を確認する
         </button>
       </div>

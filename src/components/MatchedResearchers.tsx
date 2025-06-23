@@ -185,8 +185,8 @@ export default function MatchedResearchers({
 
   return (
     <div className="relative mb-4 mt-6">
-      <div className="inline-flex items-center gap-3">
-        <h3 className="text-lg font-bold">おすすめの研究者リスト</h3>
+      <div className="inline-flex items-center gap-3  pl-6">
+        <h3 className="text-xl font-bold">おすすめの研究者リスト</h3>
         <button
           onClick={handleExportCSV}
           className="px-4 py-1 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition text-sm font-semibold"
@@ -195,7 +195,7 @@ export default function MatchedResearchers({
         </button>
       </div>
 
-      <div className="bg-white p-4 rounded-lg shadow">
+      <div className="bg-white p-4 rounded-lg shadow-none">
         <table className="w-full text-sm text-left border-collapse table-fixed">
           <thead className="bg-gray-100 text-xs">
             <tr className="border-b">
@@ -223,10 +223,10 @@ export default function MatchedResearchers({
                   <div className="font-medium">{researcher.researcher_position_current || "―"}</div>
                 </td>
                 <td className="p-2 text-center">
-                  <button onClick={() => handleInfoClick(researcher)} className="px-2 py-1 bg-gray-400 text-white rounded hover:bg-gray-600">info</button>
+                  <button onClick={() => handleInfoClick(researcher)} className="px-2 py-1 bg-gray-400 text-white rounded hover:bg-gray-500">info</button>
                 </td>
                 <td className="p-2 text-center">
-                  <button className="px-2 py-1 bg-gray-400 text-white rounded hover:bg-gray-600" onClick={() => handleShowMatchingReason(researcher.matching_reason)}>why</button>
+                  <button className="px-2 py-1 bg-gray-400 text-white rounded hover:bg-gray-500" onClick={() => handleShowMatchingReason(researcher.matching_reason)}>why</button>
                 </td>
                 <td className="p-2 text-center">
                   <input type="checkbox" className="form-checkbox h-5 w-5 border-gray-400 accent-gray-600 rounded focus:ring-gray-500" />
@@ -237,8 +237,8 @@ export default function MatchedResearchers({
                       onClick={() => handleCheckboxChange(researcher.researcher_id)}
                       className={`px-2 py-1 text-sm text-white rounded hover:opacity-90 ${
                         selectedResearchers.includes(researcher.researcher_id)
-                          ? "bg-gray-600"
-                          : "bg-gray-400 hover:bg-gray-600"
+                          ? "bg-gray-500"
+                          : "bg-gray-400 hover:bg-gray-500"
                       }`}
                     >
                       オファー
@@ -269,8 +269,8 @@ export default function MatchedResearchers({
           disabled={selectedResearchers.length === 0}
           className={`px-6 py-2 rounded-lg shadow-md transition duration-200 text-lg font-semibold ${
             selectedResearchers.length === 0
-              ? "bg-gray-400 text-white cursor-not-allowed"
-              : "bg-gray-400 text-white hover:bg-gray-600"
+              ? "bg-gray-300 text-white cursor-not-allowed"
+              : "bg-gray-400 text-white hover:bg-gray-500"
           }`}
         >
           オファーする

@@ -66,10 +66,10 @@ export default function ProjectDetails({
   }
 
   return (
-    <div className="p-6 bg-gray-50 rounded-lg shadow-md">
-      <h2 className="text-xl font-bold mb-4">{project.project_title}</h2>
+    <div className="p-6 bg-white rounded-lg">
+      <h2 className="text-3xl font-bold mb-4">{project.project_title}</h2>
 
-      <div className="bg-white p-6 rounded-lg shadow">
+      <div className="bg-white p-6 rounded-lg border border-gray-300">
         <div className="mb-4">
           <p className="text-gray-600 text-sm">カテゴリ</p>
           <p className="font-medium">{project.consultation_category}</p>

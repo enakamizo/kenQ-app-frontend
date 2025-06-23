@@ -78,9 +78,9 @@ export default function ConfirmForm() {
     };
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md border border-gray-300 max-w-3xl mx-auto mt-10">
-            <h1 className="text-2xl font-bold mb-6 text-center">下記の内容にて案件を作成しました</h1>
-            <div className="bg-gray-100 p-6 rounded-md shadow-sm">
+        <div className="bg-white p-6 rounded-lg max-w-3xl mx-auto">
+            <h1 className="text-3xl font-bold mb-6 text-center">下記内容にて案件を作成しました</h1>
+            <div className="bg-white p-6 rounded-md">
 
                 {/* 依頼のカテゴリー */}
                 <div className="mb-4">
@@ -149,7 +149,7 @@ export default function ConfirmForm() {
                 <button
                     onClick={handleConfirm}
                     className={`w-40 py-3 rounded-lg shadow-md transition duration-200 ${
-                        isLoading ? "bg-gray-400 text-white cursor-not-allowed" : "bg-gray-600 text-white hover:bg-gray-700"
+                        isLoading ? "bg-blue-400 text-white font-semibold cursor-not-allowed" : "bg-blue-400 text-white font-semibold hover:bg-blue-500"
                     }`}
                     disabled={isLoading}
                 >
@@ -157,7 +157,7 @@ export default function ConfirmForm() {
                 </button>
                 <button
                     onClick={() => router.push("/register")}
-                    className="w-40 py-3 bg-gray-400 text-white rounded-lg shadow-md hover:bg-gray-600 transition duration-200"
+                    className="w-40 py-3 bg-gray-400 text-white font-semibold rounded-lg shadow-md hover:bg-gray-500 transition duration-200"
                 >
                     修正する
                 </button>
@@ -198,7 +198,7 @@ export default function ConfirmForm() {
                         <h2 className="text-xl font-bold mb-4">案件を登録しました</h2>
                         <button
                             onClick={handleGoToResearchers}
-                            className="w-full py-3 bg-gray-900 text-white rounded-lg shadow-md hover:bg-gray-700 transition duration-200"
+                            className="w-full py-3 bg-gray-400 text-white rounded-lg shadow-md hover:bg-gray-500 transition duration-200"
                         >
                             研究者リストに進む
                         </button>
