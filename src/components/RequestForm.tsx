@@ -4,6 +4,11 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useFormContext } from "@/context/FormContext";
 
+const allResearcherLevels = [
+  "教授", "准教授", "助教", "講師", "助教授", "助手",
+  "研究員", "特任助教", "主任研究員", "特任教授",
+];
+
 type FormDataType = {
   category: string;
   title: string;
@@ -28,11 +33,11 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
     category: "",
     title: "",
     background: "",
-    industry: "",             // ✅追加
-    businessDescription: "",  // ✅追加
-    university: "",           // ✅追加
+    industry: "",
+    businessDescription: "",
+    university: "",
     researchField: "",
-    researcherLevel: [],
+    researcherLevel: [...allResearcherLevels],
     deadline: "",
   };
 
@@ -45,7 +50,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
   const [diagnosisResult, setDiagnosisResult] = useState<string | null>(null);
 
   useEffect(() => {
-    if (formData) {
+    if (formData && Object.keys(formData).length > 0) {
       setLocalFormData(formData);
     }
   }, [formData]);
@@ -289,7 +294,6 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
     </div>
 
     {/* === 下段ブロック: 大学〜確認ボタン === */}
-    
       {/* 大学 */}
       <div>
         <label className="block text-sm font-medium mb-1">大学</label>
@@ -330,28 +334,51 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
       {/* 研究者階層 */}
       <div>
         <label className="block text-sm font-medium mb-1">研究者階層（複数選択可）</label>
-        <div className="space-y-1">
-          {["教授", "准教授", "助教", "講師", "助教授", "助手", "研究員", "特任助教", "主任研究員", "特任教授"].map(level => (
-            <label key={level} className="flex items-center space-x-2">
+
+        {/* 横並び全体ラップ */}
+        <div className="flex gap-x-8">
+
+          {/* 左側：すべて選択 */}
+          <div className="flex flex-col">
+            <label className="flex items-center space-x-2">
               <input
                 type="checkbox"
-                name="researcherLevel"
-                value={level}
-                checked={localFormData.researcherLevel.includes(level)}
+                checked={localFormData.researcherLevel.length === allResearcherLevels.length}
                 onChange={(e) => {
-                  const value = e.target.value;
                   const isChecked = e.target.checked;
-                  const updatedLevels = isChecked
-                    ? [...localFormData.researcherLevel, value]
-                    : localFormData.researcherLevel.filter(item => item !== value);
-
+                  const updatedLevels = isChecked ? allResearcherLevels : [];
                   setLocalFormData(prev => ({ ...prev, researcherLevel: updatedLevels }));
                   setFormData(prev => ({ ...prev, researcherLevel: updatedLevels }));
                 }}
               />
-              <span>{level}</span>
+              <span>すべて選択</span>
             </label>
-          ))}
+          </div>
+
+          {/* 右側：研究者階層を1列に表示 */}
+          <div className="grid grid-cols-1 gap-y-1">
+            {allResearcherLevels.map(level => (
+              <label key={level} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  name="researcherLevel"
+                  value={level}
+                  checked={localFormData.researcherLevel.includes(level)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const isChecked = e.target.checked;
+                    const updatedLevels = isChecked
+                      ? [...localFormData.researcherLevel, value]
+                      : localFormData.researcherLevel.filter(item => item !== value);
+
+                    setLocalFormData(prev => ({ ...prev, researcherLevel: updatedLevels }));
+                    setFormData(prev => ({ ...prev, researcherLevel: updatedLevels }));
+                  }}
+                />
+                <span>{level}</span>
+              </label>
+            ))}
+          </div>
         </div>
       </div>
 
