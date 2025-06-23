@@ -3,7 +3,14 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export default function MatchedResearchers({ projectId }: { projectId: string }) {
+//export default function MatchedResearchers({ projectId }: { projectId: string }) {
+export default function MatchedResearchers({
+  projectId,
+  setLoading,
+}: {
+  projectId: string;
+  setLoading: (value: boolean) => void;
+}) {
   console.log("📌 現在の project_id:", projectId); 
   const [researchers, setResearchers] = useState<any[]>([]);
   const [selectedResearchers, setSelectedResearchers] = useState<string[]>([]);
@@ -60,6 +67,8 @@ export default function MatchedResearchers({ projectId }: { projectId: string })
         setResearchers(uniqueResearchers);
       } catch (error) {
         console.error("研究者データの取得エラー:", error);
+      } finally {
+        setLoading(false); // ローディング解除
       }
     };
     fetchResearchers();

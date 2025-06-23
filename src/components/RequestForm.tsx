@@ -37,6 +37,8 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
   };
 
   const [localFormData, setLocalFormData] = useState<FormDataType>(formData || initialData);
+  const [loading, setLoading] = useState(false); // ←診断中に「しばらくお待ちください。」を表示するため
+
 
   // ✅ Step 1: モーダル表示と診断結果を管理
   const [showModal, setShowModal] = useState(false);
@@ -62,6 +64,8 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
       alert("必須項目（上段5項目）をすべて入力してください。");
       return;
     }
+
+    setLoading(true); // ← しばらくお待ちください。の表示のため
 
     try {
       const response = await fetch("https://app-advanced3-1-cgghbjavdyhdbfeb.canadacentral-01.azurewebsites.net/ai-diagnosis", {
@@ -101,6 +105,8 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
       console.error("診断エラー:", error);
       setDiagnosisResult("診断中にエラーが発生しました");
       setShowModal(true);
+    } finally {
+      setLoading(false); // ← しばらくお待ちください。の表示のため
     }
   };
 
@@ -236,6 +242,35 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
             </div>
           </div>
         )}
+
+        {loading && (
+          <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
+              <p className="text-lg font-medium mb-4">しばらくお待ちください。</p>
+              <svg
+                className="animate-spin h-10 w-10 text-blue-500"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
 

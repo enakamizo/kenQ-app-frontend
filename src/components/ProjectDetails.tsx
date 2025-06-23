@@ -2,7 +2,15 @@
 
 import { useEffect, useState } from "react";
 
-export default function ProjectDetails({ projectId }: { projectId: string }) {
+//export default function ProjectDetails({ projectId }: { projectId: string }) {
+export default function ProjectDetails({
+  projectId,
+  setLoading,
+}: {
+  projectId: string;
+  setLoading: (value: boolean) => void;
+}) {
+
   const [project, setProject] = useState<any>(null);
 
   useEffect(() => {
@@ -19,6 +27,8 @@ export default function ProjectDetails({ projectId }: { projectId: string }) {
         setProject(data.project);  // ← プロジェクト部分だけ使う
       } catch (error) {
         console.error("プロジェクト情報取得エラー:", error);
+      } finally {
+        setLoading(false); // ここでローディング終了を通知
       }
     };
 
@@ -27,9 +37,29 @@ export default function ProjectDetails({ projectId }: { projectId: string }) {
 
   if (!project) {
     return (
-      <div className="p-10">
-        <div className="max-w-5xl mx-auto bg-white p-8 rounded-lg shadow">
-          <p className="text-center text-gray-500 text-lg">しばらくお待ちください。</p>
+      <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
+          <p className="text-lg font-medium mb-4">しばらくお待ちください。</p>
+          <svg
+            className="animate-spin h-10 w-10 text-blue-500"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+            />
+          </svg>
         </div>
       </div>
     );
