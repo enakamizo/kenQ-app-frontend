@@ -36,6 +36,15 @@ export default function MyPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  // 案件削除時のモーダル表示
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [targetProject, setTargetProject] = useState<{
+    project: ProjectWithRecommendations;
+    index: number;
+  } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
   useEffect(() => {
     // 描画完了後に fetchProjects を呼び出す
     setTimeout(() => {
@@ -141,34 +150,37 @@ export default function MyPage() {
     );
   }
 
-  const deleteProject = async (projectId: number) => {
-    if (!confirm("本当にこの案件を削除しますか？")) return;
+  const handleDelete = async () => {
+    if (!targetProject) return;
+    setIsDeleting(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_AZURE_API_URL}/delete-project/${projectId}`, {
-        method: "DELETE",
-      });
+      const projectId = targetProject.project.project_id;
+      console.log("🔍 削除対象のID:", projectId);
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_AZURE_API_URL}/delete-project/${projectId}`,
+        { method: "DELETE" }
+      );
 
       if (!res.ok) {
+        const errorText = await res.text();
+        console.error("❌ 削除エラー詳細:", errorText);
         throw new Error("削除に失敗しました");
       }
 
-      // 成功したらUIからも削除
-      //setActiveProjects(prev => prev.filter(p => p.project_id !== projectId));
-      //setClosedProjects(prev => prev.filter(p => p.project_id !== projectId));
+      setActiveProjects(prev => prev.filter(p => p.project_id !== projectId));
+      setClosedProjects(prev => prev.filter(p => p.project_id !== projectId));
 
-      // 削除対象を除外して再セット
-      setActiveProjects((prev) => {
-        return prev.filter((project) => project.project_id !== projectId);
-      });
-      setClosedProjects((prev) => {
-        return prev.filter((project) => project.project_id !== projectId);
-      });
-
-      alert("案件を削除しました");
+      //alert("案件を削除しました");
+      setShowSuccessModal(true);
     } catch (err) {
-      console.error("削除エラー:", err);
+      console.error("❗ 削除時の例外:", err);
       alert("削除に失敗しました");
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteModal(false);
+      setTargetProject(null);
     }
   };
 
@@ -186,9 +198,6 @@ export default function MyPage() {
     }
     return statusCount;
   };
-
-  // 案件の強制非表示（仮）
-  // const hiddenIds = [129, 220, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 231, 232, 233, 234, 235, 236, 237,238,  239, 240, 241, 242, 243, 244, 245,246,247,248,249,250,251,252,253,254,255,256,257,258,262,263];
 
   return (
     <div className="p-10">
@@ -257,7 +266,10 @@ export default function MyPage() {
                     </button>
                     <button
                       className="text-sm text-gray-600 hover:underline"
-                      onClick={() => deleteProject(projectData.project_id)}
+                      onClick={() => {
+                        setTargetProject({ project: projectData, index });
+                        setShowDeleteModal(true);
+                      }}
                     >
                       削除
                     </button>
@@ -326,7 +338,10 @@ export default function MyPage() {
                     </button>
                     <button
                       className="text-sm text-gray-600 hover:underline"
-                      onClick={() => deleteProject(projectData.project_id)}
+                      onClick={() => {
+                        setTargetProject({ project: projectData, index });
+                        setShowDeleteModal(true);
+                      }}
                     >
                       削除
                     </button>
@@ -338,6 +353,67 @@ export default function MyPage() {
         </section>
 
       </div>
+
+      {showDeleteModal && targetProject && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            {isDeleting ? (
+              <div className="flex flex-col items-center">
+                <p className="text-lg font-medium mb-4">しばらくお待ちください。</p>
+                <svg
+                  className="animate-spin h-10 w-10 text-blue-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                </svg>
+              </div>
+            ) : (
+              <>
+                <h2 className="text-xl font-semibold mb-4">案件の削除確認</h2>
+                <p className="mb-4">
+                  <strong>
+                    No.{targetProject.index + 1} {targetProject.project.project.project_title}
+                  </strong>{" "}
+                  を削除しますか？
+                </p>
+                <div className="flex justify-end gap-4">
+                  <button
+                    className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+                    onClick={() => setShowDeleteModal(false)}
+                  >
+                    キャンセル
+                  </button>
+                  <button
+                    className="px-4 py-2 bg-red-400 text-white rounded hover:bg-red-500"
+                    onClick={handleDelete}
+                  >
+                    削除する
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-80 text-center">
+            <h2 className="text-lg font-semibold mb-4">削除完了</h2>
+            <p className="mb-6">案件を削除しました。</p>
+            <button
+              onClick={() => setShowSuccessModal(false)}
+              className="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
