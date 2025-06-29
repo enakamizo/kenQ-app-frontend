@@ -15,6 +15,8 @@ export default function ConfirmForm() {
     const handleConfirm = async () => {
         setIsLoading(true);
         setError(null);
+        console.log("✅ 大学名:", formData.university);
+
         try {
             const response = await fetch(
                 "https://app-advanced3-1-cgghbjavdyhdbfeb.canadacentral-01.azurewebsites.net/project-registration",  // 本番環境用
@@ -31,12 +33,15 @@ export default function ConfirmForm() {
                         project_content: formData.background || "未入力",
                         industry: formData.industry || "未選択",                 // ✅追加
                         business_description: formData.businessDescription || "未入力", // ✅追加
-                        university: formData.university || "未入力",             // ✅追加
+                        //university: formData.university || "未入力",             // ✅追加
+                        university: Array.isArray(formData.university)
+                            ? formData.university
+                            : formData.university ? [formData.university] : [],
                         research_field: formData.researchField || "未選択",
                         //preferred_researcher_level: formData.researcherLevel || "未選択",
                         preferred_researcher_level: Array.isArray(formData.researcherLevel)
-                            ? formData.researcherLevel.join(", ")
-                            : formData.researcherLevel || "未選択",
+                            ? formData.researcherLevel
+                            : formData.researcherLevel ? [formData.researcherLevel] : [],
                         application_deadline: formData.deadline || "未設定",
                     }),
                 }
