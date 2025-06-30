@@ -312,15 +312,17 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
 
       {/* === 下段ブロック: 大学〜確認ボタン === */}
       {/* 大学 */}
-      <div className="p-4 rounded-lg border border-gray-300">
+      <div>
         <label className="block text-sm font-medium mb-1">大学</label>
-        <UniversitySelect
-          value={formData.university || []}
-          onChange={(value) => {
-            setFormData({ ...formData, university: value });
-            setLocalFormData((prev) => ({ ...prev, university: value }));
-          }}
-        />
+        <div className="p-4 rounded-lg border border-gray-300">
+          <UniversitySelect
+            value={formData.university || []}
+            onChange={(value) => {
+              setFormData({ ...formData, university: value });
+              setLocalFormData((prev) => ({ ...prev, university: value }));
+            }}
+          />
+        </div>
       </div>
 
      {/* 研究分野 */}
