@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useFormContext } from "@/context/FormContext";
+import UniversitySelect from "@/components/UniversitySelect";
 
 const allResearcherLevels = [
   "教授", "准教授", "助教", "講師", "助教授", "助手",
@@ -15,7 +16,7 @@ type FormDataType = {
   background: string;
   industry: string;        // ✅追加
   businessDescription: string; // ✅追加
-  university: string;      // ✅追加
+  university: string[];      // ✅追加
   researchField: string;
   researcherLevel: string[];
   deadline: string;
@@ -42,18 +43,34 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
   };
 
   const [localFormData, setLocalFormData] = useState<FormDataType>(formData || initialData);
+  const [selectedUniversities, setSelectedUniversities] = useState<string[]>([]);
   const [loading, setLoading] = useState(false); // ←診断中に「しばらくお待ちください。」を表示するため
   const [validationError, setValidationError] = useState<string | null>(null); // ←AIアシストのため５つの項目すべてに入力してもらう注意を表示するため
 
-  // ✅ Step 1: モーダル表示と診断結果を管理
+  // ✅ モーダル表示と診断結果を管理
   const [showModal, setShowModal] = useState(false);
   const [diagnosisResult, setDiagnosisResult] = useState<string | null>(null);
 
+  // ✅ 選択した大学を formData に反映
   useEffect(() => {
-    if (formData && Object.keys(formData).length > 0) {
-      setLocalFormData(formData);
+    if (JSON.stringify(formData.university) !== JSON.stringify(selectedUniversities)) {
+      setFormData(prev => ({ ...prev, university: selectedUniversities }));
     }
-  }, [formData]);
+  }, [selectedUniversities]);
+
+  // ✅ formData をもとに localFormData や selectedUniversities を初期化
+  useEffect(() => {
+  setLocalFormData(formData);
+
+  const universityArray =
+    Array.isArray(formData.university)
+      ? formData.university
+      : formData.university
+      ? [formData.university]
+      : [];
+
+  setSelectedUniversities(universityArray);
+}, []);
 
   const handleDiagnosis = async () => {
     console.log("送信内容", localFormData);
@@ -84,7 +101,10 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
           project_content: localFormData.background,
           industry: localFormData.industry,
           business_description: localFormData.businessDescription,
-          university: localFormData.university || "",
+          //university: localFormData.university || "",
+          university: Array.isArray(formData.university)
+            ? formData.university
+            : formData.university ? [formData.university] : [],
           research_field: localFormData.researchField || "",
           preferred_researcher_level: Array.isArray(localFormData.researcherLevel)
             ? localFormData.researcherLevel.join("/ ")
@@ -215,16 +235,13 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
         />
 
         {/* 入力欄の外側・右下にボタンを配置 */}
-        <div className="flex justify-end items-center mt-2 space-x-2">
-          <p className="text-xs text-gray-800">
+        <div className="flex flex-col items-center mt-6 space-y-2">
+          <p className="text-xs text-gray-800 text-center">
             案件登録内容のブラッシュアップにAIアシスト機能をご活用ください。
           </p>
           <button
             type="button"
-            onClick={() => {
-              //alert("AIアシスト機能を実行します");
-              handleDiagnosis();
-            }}
+            onClick={handleDiagnosis}
             className="bg-blue-400 hover:bg-blue-500 text-white text-sm font-semibold py-1 px-3 rounded"
           >
             案件入力AIアシスト
@@ -251,7 +268,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
         {loading && (
           <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
-              <p className="text-lg font-medium mb-4">しばらくお待ちください。</p>
+              <p className="text-lg font-medium mb-4">しばらくお待ちください</p>
               <svg
                 className="animate-spin h-10 w-10 text-blue-500"
                 xmlns="http://www.w3.org/2000/svg"
@@ -293,17 +310,16 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
       </div>
     </div>
 
-    {/* === 下段ブロック: 大学〜確認ボタン === */}
+      {/* === 下段ブロック: 大学〜確認ボタン === */}
       {/* 大学 */}
-      <div>
+      <div className="p-4 rounded-lg border border-gray-300">
         <label className="block text-sm font-medium mb-1">大学</label>
-        <input
-          type="text"
-          name="university"
-          value={localFormData.university}
-          onChange={handleChange}
-          placeholder="大学名を入力してください"
-          className="w-full p-2 border border-gray-300 rounded-lg"
+        <UniversitySelect
+          value={formData.university || []}
+          onChange={(value) => {
+            setFormData({ ...formData, university: value });
+            setLocalFormData((prev) => ({ ...prev, university: value }));
+          }}
         />
       </div>
 
@@ -332,27 +348,29 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
       </div>
 
       {/* 研究者階層 */}
-      <div className="p-4 rounded-lg border border-gray-300">
+      <div>
         <label className="block text-sm font-medium mb-1">研究者階層（複数選択可）</label>
+        <div className="p-4 rounded-lg border border-gray-300">
 
-        {/* 横並び全体ラップ */}
-        <div className="flex gap-x-8">
+          {/* 横並び全体ラップ */}
+          <div className="flex gap-x-8">
 
-          {/* 左側：すべて選択 */}
-          <div className="flex flex-col">
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={localFormData.researcherLevel.length === allResearcherLevels.length}
-                onChange={(e) => {
-                  const isChecked = e.target.checked;
-                  const updatedLevels = isChecked ? allResearcherLevels : [];
-                  setLocalFormData(prev => ({ ...prev, researcherLevel: updatedLevels }));
-                  setFormData(prev => ({ ...prev, researcherLevel: updatedLevels }));
-                }}
-              />
-              <span>すべて選択</span>
-            </label>
+            {/* 左側：すべて選択 */}
+            <div className="flex flex-col">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={localFormData.researcherLevel.length === allResearcherLevels.length}
+                  onChange={(e) => {
+                    const isChecked = e.target.checked;
+                    const updatedLevels = isChecked ? allResearcherLevels : [];
+                    setLocalFormData(prev => ({ ...prev, researcherLevel: updatedLevels }));
+                    setFormData(prev => ({ ...prev, researcherLevel: updatedLevels }));
+                  }}
+                />
+                <span>すべて選択</span>
+              </label>
+            </div>
           </div>
 
           {/* 右側：研究者階層を1列に表示 */}

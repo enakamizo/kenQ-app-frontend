@@ -25,7 +25,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
             {isLoading && (
                 <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
                 <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
-                    <p className="text-lg font-medium mb-4">しばらくお待ちください。</p>
+                    <p className="text-lg font-medium mb-4">しばらくお待ちください</p>
                     <svg
                     className="animate-spin h-10 w-10 text-blue-500"
                     xmlns="http://www.w3.org/2000/svg"

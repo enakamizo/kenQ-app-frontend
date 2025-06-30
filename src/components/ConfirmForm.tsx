@@ -16,6 +16,8 @@ export default function ConfirmForm() {
         setIsLoading(true);
         setError(null);
         console.log("✅ 大学名:", formData.university);
+        console.log("📦 university:", formData.university);
+        console.log("📦 typeof:", typeof formData.university);
 
         try {
             const response = await fetch(
@@ -31,14 +33,17 @@ export default function ConfirmForm() {
                         project_title: formData.title || "未入力",
                         consultation_category: formData.category || "未選択",
                         project_content: formData.background || "未入力",
-                        industry: formData.industry || "未選択",                 // ✅追加
-                        business_description: formData.businessDescription || "未入力", // ✅追加
-                        //university: formData.university || "未入力",             // ✅追加
-                        university: Array.isArray(formData.university)
-                            ? formData.university
-                            : formData.university ? [formData.university] : [],
+                        industry: formData.industry || "未選択",
+                        business_description: formData.businessDescription || "未入力",
+
+                        university:
+                        Array.isArray(formData.university)
+                            ? formData.university.length >= 85
+                            ? "全大学"
+                            : formData.university.filter(Boolean)  // ← 空文字や null を除去
+                            : "未選択",
+
                         research_field: formData.researchField || "未選択",
-                        //preferred_researcher_level: formData.researcherLevel || "未選択",
                         preferred_researcher_level: Array.isArray(formData.researcherLevel)
                             ? formData.researcherLevel
                             : formData.researcherLevel ? [formData.researcherLevel] : [],
@@ -120,7 +125,11 @@ export default function ConfirmForm() {
                 {/* 大学 */}
                 <div className="mb-4">
                     <label className="block text-sm font-medium mb-1">大学</label>
-                    <p className="bg-white p-2 border border-gray-300 rounded-md">{formData.university || "未入力"}</p>
+                    <p className="bg-white p-2 border border-gray-300 rounded-md">
+                    {Array.isArray(formData.university)
+                        ? formData.university.join(" / ")
+                        : formData.university || "未選択"}
+                    </p>
                 </div>
 
                 {/* 研究分野 */}
@@ -171,7 +180,7 @@ export default function ConfirmForm() {
             {isLoading && (
             <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
                 <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
-                <p className="text-lg font-medium mb-4">しばらくお待ちください。</p>
+                <p className="text-lg font-medium mb-4">しばらくお待ちください</p>
                 <svg
                     className="animate-spin h-10 w-10 text-blue-500"
                     xmlns="http://www.w3.org/2000/svg"
