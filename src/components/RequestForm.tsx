@@ -36,7 +36,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
     background: "",
     industry: "",
     businessDescription: "",
-    university: "",
+    university: [],
     researchField: "",
     researcherLevel: [...allResearcherLevels],
     deadline: "",
