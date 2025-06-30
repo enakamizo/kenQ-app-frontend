@@ -14,7 +14,7 @@ export default function RegisterPage() {
     background: string;
     industry: string;
     businessDescription: string;
-    university: string;
+    university: string[];
     researchField: string;
     researcherLevel: string[];
     deadline: string;
