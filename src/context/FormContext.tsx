@@ -9,7 +9,7 @@ type FormDataType = {
   background: string;
   industry: string; // ← 追加
   businessDescription: string; // ← 追加
-  university: string; // ← 追加
+  university: string[]; // ← 追加
   researchField: string;
   researcherLevel: string[];
   deadline: string;
@@ -31,7 +31,7 @@ export function FormProvider({ children }: { children: ReactNode }) {
     background: "",
     industry: "",             // ✅ 追加
     businessDescription: "",  // ✅ 追加
-    university: "",           // ✅ 追加
+    university: [],           // ✅ 追加
     researchField: "",
     researcherLevel: [],
     deadline: "",
