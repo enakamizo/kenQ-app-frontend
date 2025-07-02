@@ -45,7 +45,7 @@ export default function UniversitySelect({ value, onChange }: UniversitySelectPr
                     checked={allUniversities.every((u) => selectedUniversities.includes(u))}
                     onChange={handleSelectAll}
                 />
-                <span>全大学を選択（{allUniversities.length}校）</span>
+                <span>全大学を選択（国立大{allUniversities.length}校）</span>
             </label>
         </div>
 
@@ -107,9 +107,10 @@ export default function UniversitySelect({ value, onChange }: UniversitySelectPr
             );
         })}
 
-        {/* チップ形式表示 */}
+        {/* チップ形式表示はコメントアウト */}
         <div>
             <p className="font-semibold mt-6">選択された大学: {selectedUniversities.length} 校</p>
+                {/*
                 <div className="flex flex-wrap gap-2 mt-2">
                     {selectedUniversities.map((u) => (
                         <div
@@ -138,6 +139,7 @@ export default function UniversitySelect({ value, onChange }: UniversitySelectPr
                         </div>
                     ))}
                 </div>
+                */}
             </div>
         </div>
     );

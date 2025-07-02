@@ -353,12 +353,9 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
       <div>
         <label className="block text-sm font-medium mb-1">研究者階層（複数選択可）</label>
         <div className="p-4 rounded-lg border border-gray-300">
-
-          {/* 横並び全体ラップ */}
-          <div className="flex gap-x-8">
-
-            {/* 左側：すべて選択 */}
-            <div className="flex flex-col">
+          <div className="grid grid-cols-3 gap-x-8">
+            {/* 左列：すべて選択 */}
+            <div className="flex items-start">
               <label className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -373,31 +370,31 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
                 <span>すべて選択</span>
               </label>
             </div>
-          </div>
 
-          {/* 右側：研究者階層を1列に表示 */}
-          <div className="grid grid-cols-1 gap-y-1">
-            {allResearcherLevels.map(level => (
-              <label key={level} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  name="researcherLevel"
-                  value={level}
-                  checked={localFormData.researcherLevel.includes(level)}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    const isChecked = e.target.checked;
-                    const updatedLevels = isChecked
-                      ? [...localFormData.researcherLevel, value]
-                      : localFormData.researcherLevel.filter(item => item !== value);
+            {/* 右列：研究者階層チェックボックス（縦1列） */}
+            <div className="flex flex-col space-y-1">
+              {allResearcherLevels.map((level) => (
+                <label key={level} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="researcherLevel"
+                    value={level}
+                    checked={localFormData.researcherLevel.includes(level)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const isChecked = e.target.checked;
+                      const updatedLevels = isChecked
+                        ? [...localFormData.researcherLevel, value]
+                        : localFormData.researcherLevel.filter(item => item !== value);
 
-                    setLocalFormData(prev => ({ ...prev, researcherLevel: updatedLevels }));
-                    setFormData(prev => ({ ...prev, researcherLevel: updatedLevels }));
-                  }}
-                />
-                <span>{level}</span>
-              </label>
-            ))}
+                      setLocalFormData(prev => ({ ...prev, researcherLevel: updatedLevels }));
+                      setFormData(prev => ({ ...prev, researcherLevel: updatedLevels }));
+                    }}
+                  />
+                  <span>{level}</span>
+                </label>
+              ))}
+            </div>
           </div>
         </div>
       </div>
