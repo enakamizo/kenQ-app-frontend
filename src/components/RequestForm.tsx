@@ -106,9 +106,9 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
             ? formData.university
             : formData.university ? [formData.university] : [],
           research_field: localFormData.researchField || "",
-          preferred_researcher_level: Array.isArray(localFormData.researcherLevel)
-            ? localFormData.researcherLevel.join("/ ")
-            : localFormData.researcherLevel || "",
+          preferred_researcher_level: Array.isArray(formData.researcherLevel)
+            ? formData.researcherLevel
+            : formData.researcherLevel ? [formData.researcherLevel] : [],
           application_deadline:
             localFormData.deadline && localFormData.deadline.trim() !== ""
               ? localFormData.deadline
