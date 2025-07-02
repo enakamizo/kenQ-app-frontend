@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useFormContext } from "@/context/FormContext";
 import UniversitySelect from "@/components/UniversitySelect";
+import universitiesBySubregion from "@/data/universities_by_subregion.json";
 
 const allResearcherLevels = [
   "教授", "准教授", "助教", "講師", "助教授", "助手",
@@ -62,14 +63,20 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
   useEffect(() => {
   setLocalFormData(formData);
 
-  const universityArray =
+    let universityArray =
     Array.isArray(formData.university)
       ? formData.university
       : formData.university
       ? [formData.university]
       : [];
 
-  setSelectedUniversities(universityArray);
+  // ✅ "全大学" が含まれていたら、85校に展開
+  if (universityArray.includes("全大学")) {
+    const universityList85 = Object.values(universitiesBySubregion).flat();
+    setSelectedUniversities(universityList85);
+  } else {
+    setSelectedUniversities(universityArray);
+  }
 }, []);
 
   const handleDiagnosis = async () => {
@@ -316,10 +323,21 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
         <label className="block text-sm font-medium mb-1">大学</label>
         <div className="p-4 rounded-lg border border-gray-300">
           <UniversitySelect
-            value={formData.university || []}
+            value={
+              Array.isArray(formData.university) &&
+              formData.university.length === 1 &&
+              formData.university[0] === "全大学"
+                ? Object.values(universitiesBySubregion).flat()
+                : formData.university || []
+            }
             onChange={(value) => {
-              setFormData({ ...formData, university: value });
-              setLocalFormData((prev) => ({ ...prev, university: value }));
+              const allUniversityNames = Object.values(universitiesBySubregion).flat();
+              const isAllSelected = value.length === allUniversityNames.length;
+              const updated = isAllSelected ? ["全大学"] : value;
+
+              setFormData({ ...formData, university: updated });
+              setLocalFormData((prev) => ({ ...prev, university: updated }));
+              setSelectedUniversities(updated);
             }}
           />
         </div>
