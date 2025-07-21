@@ -5,7 +5,7 @@ const nextConfig = {
     return [
       {
         source: '/api/projects-list',
-        destination: 'https://app-advanced3-1-cgghbjavdyhdbfeb.canadacentral-01.azurewebsites.net/projects-list',
+        destination: 'app-kenq-1-azf7d4eje9cgaah2.canadacentral-01.azurewebsites.net/projects-list',
       },
     ];
   },
