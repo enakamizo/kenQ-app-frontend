@@ -4,7 +4,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and Deploy Node.js app to Azure Web App - app-kenq-2
+name: Build and deploy Next.js app to Azure Web App
 
 on:
   push:
@@ -12,48 +12,33 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    name: Build Job
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout GitHub repo
+      uses: actions/checkout@v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'  # 必要に応じてバージョンを変更
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
 
-      - name: Install dependencies
-        run: npm install
+    - name: Install dependencies
+      run: npm ci
 
-      - name: Build project
-        run: npm run build
+    - name: Build the app
+      run: npm run build
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: node-app
-          path: .  # 必要に応じて build フォルダに絞るなら "path: ./build" 等に
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'app-kenq-2'
+        slot-name: 'buhqaxcgejdpawcf' # スロット名がある場合
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+        package: .
 
-  deploy:
-    runs-on: ubuntu-latest
-    name: Deploy Job
-    needs: build  # ← build ジョブが完了してから実行される
 
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: node-app
-
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'app-kenq-2'  # ← Azure 上の App Service 名
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: .
 
 
 
