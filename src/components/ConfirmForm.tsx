@@ -21,7 +21,7 @@ export default function ConfirmForm() {
 
         try {
             const response = await fetch(
-                "https://app-advanced3-1-cgghbjavdyhdbfeb.canadacentral-01.azurewebsites.net/project-registration",  // 本番環境用
+                "https://app-kenq-1-azf7d4eje9cgaah2.canadacentral-01.azurewebsites.net/project-registration",  // 本番環境用
                 // "http://127.0.0.1:8000/project-registration",　//ローカル環境用
                 {
                     method: "POST",

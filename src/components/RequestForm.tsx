@@ -97,7 +97,7 @@ export default function RequestForm({ onSubmit }: RequestFormProps) {
     setLoading(true); // ← しばらくお待ちください。の表示のため
 
     try {
-      const response = await fetch("https://app-advanced3-1-cgghbjavdyhdbfeb.canadacentral-01.azurewebsites.net/ai-diagnosis", {
+      const response = await fetch("https://app-kenq-1-azf7d4eje9cgaah2.canadacentral-01.azurewebsites.net/project-registration/ai-diagnosis", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
