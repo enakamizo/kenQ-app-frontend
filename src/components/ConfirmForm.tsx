@@ -19,10 +19,13 @@ export default function ConfirmForm() {
         console.log("📦 university:", formData.university);
         console.log("📦 typeof:", typeof formData.university);
 
+        const apiBaseUrl = process.env.NEXT_PUBLIC_AZURE_API_URL;
+
         try {
             const response = await fetch(
-                "https://app-kenq-1-azf7d4eje9cgaah2.canadacentral-01.azurewebsites.net/project-registration",  // 本番環境用
+                //"https://app-kenq-1-azf7d4eje9cgaah2.canadacentral-01.azurewebsites.net/project-registration",  // 本番環境用
                 // "http://127.0.0.1:8000/project-registration",　//ローカル環境用
+                `${apiBaseUrl}/project-registration`,
                 {
                     method: "POST",
                     headers: {
