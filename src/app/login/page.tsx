@@ -13,7 +13,9 @@ export default function LoginPage() {
     const dummyUserId = 1;
 
     try {
-        const res = await fetch(`/api/projects-list?company_user_id=${dummyUserId}`);
+        //const res = await fetch(`/api/projects-list?company_user_id=${dummyUserId}`); // ↓ 環境変数から絶対URLでアクセスに統一 ↓
+        const res = await fetch(`${process.env.NEXT_PUBLIC_AZURE_API_URL}/projects-list?company_user_id=${dummyUserId}`);
+
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
         const projectList = await res.json();
