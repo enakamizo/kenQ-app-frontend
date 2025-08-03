@@ -38,67 +38,85 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-24 bg-gray-50">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-        <div className="text-center">
-          <h1 className="text-4xl text-gray-600 font-bold mb-2">研Q</h1>
-          <h2 className="text-2xl text-gray-600 font-bold">研究者ログイン</h2>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+      <img src="/研Qロゴ.png" alt="研Q" className="w-[200px] h-24 mb-12" />
+      
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 w-full max-w-md">
+          {error}
         </div>
-
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-            {error}
-          </div>
-        )}
-
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label
-              htmlFor="companyUserName"
-              className="block text-sm font-medium text-gray-700"
-            >
-              ユーザー名
-            </label>
-            <input
-              id="companyUserName"
-              name="companyUserName"
-              type="text"
-              required
-              value={companyUserName}
-              onChange={(e) => setCompanyUserName(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 bg-white focus:ring focus:ring-indigo-300 focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              パスワード
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 bg-white focus:ring focus:ring-indigo-300 focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400"
-            >
-              {isLoading ? "ログイン中..." : "ログイン"}
-            </button>
-          </div>
-        </form>
+      )}
+      
+      <form className="flex flex-col gap-6 w-full max-w-md" onSubmit={handleSubmit}>
+        <input
+          id="companyUserName"
+          name="companyUserName"
+          type="text"
+          placeholder="ユーザー名"
+          required
+          value={companyUserName}
+          onChange={(e) => setCompanyUserName(e.target.value)}
+          className="border border-gray-400 rounded-md px-6 py-4 text-xl shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        
+        <input
+          id="password"
+          name="password"
+          type="password"
+          placeholder="パスワード"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="border border-gray-400 rounded-md px-6 py-4 text-xl shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="bg-gray-700 text-white rounded py-4 text-xl font-semibold hover:bg-gray-800 disabled:bg-gray-400"
+        >
+          {isLoading ? "ログイン中..." : "Log In"}
+        </button>
+      </form>
+      
+      <p className="text-center text-base text-gray-500 mt-3">
+        パスワードを忘れた方は{" "}
+        <a
+          href="#"
+          onClick={(e) => e.preventDefault()}
+          className="text-blue-600 font-medium cursor-default"
+        >
+          こちら
+        </a>
+      </p>
+      
+      <div className="flex items-center justify-center mt-3">
+        <hr className="w-1/4 border-gray-300" />
+        <span className="mx-3 text-gray-500 text-base">or</span>
+        <hr className="w-1/4 border-gray-300" />
       </div>
+      
+      <div className="flex justify-center gap-8 mt-3">
+        <img
+          src="/Google.png"
+          alt="Google login"
+          className="w-28 h-auto cursor-pointer"
+          onClick={() => alert("Googleログイン未実装")}
+        />
+        <img
+          src="/Facebook.png"
+          alt="Facebook login"
+          className="w-28 h-auto cursor-pointer"
+          onClick={() => alert("Facebookログイン未実装")}
+        />
+      </div>
+      
+      <p className="text-center text-base text-gray-500 mt-3">
+        アカウントをお持ちでない方は{" "}
+        <a href="#" onClick={(e) => e.preventDefault()} className="text-blue-600 font-medium">
+          新規登録
+        </a>
+      </p>
     </div>
   );
 }
