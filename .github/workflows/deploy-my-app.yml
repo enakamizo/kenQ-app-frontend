@@ -1,0 +1,67 @@
+name: Build and deploy my-app to Azure Web App - app-kenq-2
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: npm install, build, and test
+        env:
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_AZURE_API_URL: ${{ secrets.NEXT_PUBLIC_AZURE_API_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+        run: |
+          echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > .env.local
+          echo "NEXT_PUBLIC_AZURE_API_URL=${{ secrets.NEXT_PUBLIC_AZURE_API_URL }}" >> .env.local
+          echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env.local
+          npm ci
+          npm run build
+
+      - name: Zip artifact for deployment
+        run: zip -r my-app-release.zip .next standalone package.json
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-app
+          path: my-app-release.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: my-app
+
+      - name: Unzip artifact for deployment
+        run: unzip my-app-release.zip
+
+      - name: 'Deploy to Azure Web App'
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'app-kenq-2'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_APP_KENQ_2 }}
+          package: .
