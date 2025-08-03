@@ -1,88 +1,104 @@
-// src/app/login/page.tsx
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const router = useRouter();
+  const router = useRouter();
+  const [companyUserName, setCompanyUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-    const handleLogin = async () => {
-    const dummyUserId = 1;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
 
     try {
-        console.log('API URL:', process.env.NEXT_PUBLIC_AZURE_API_URL)
-        const res = await fetch(`${process.env.NEXT_PUBLIC_AZURE_API_URL}/projects-list?company_user_id=${dummyUserId}`);
+      const result = await signIn("credentials", {
+        company_user_name: companyUserName,
+        password,
+        redirect: false,
+      });
 
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-
-        const projectList = await res.json();
-        localStorage.setItem('projectList', JSON.stringify(projectList));
-        router.push('/mypage');
+      if (result?.error) {
+        setError("ログインに失敗しました。ユーザー名とパスワードを確認してください。");
+        console.error("Login failed:", result.error);
+      } else {
+        router.push("/mypage");
+      }
     } catch (err) {
-        console.error("❌ fetch失敗:", err);
-        alert("ログイン中にエラーが発生しました。");
+      console.error("Login error:", err);
+      setError("エラーが発生しました。もう一度お試しください。");
+    } finally {
+      setIsLoading(false);
     }
-    };
+  };
 
-    return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-white">
-        <img src="/研Qロゴ.png" alt="研Q" className="w-[200px] h-24 mb-12" />
-        <div className="flex flex-col gap-6 w-full max-w-md">
-            <input
-            type="email"
-            placeholder="Your email"
-            className="border border-gray-400 rounded-md px-6 py-4 text-xl shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <input
-            type="password"
-            placeholder="Password"
-            className="border border-gray-400 rounded-md px-6 py-4 text-xl shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-            onClick={handleLogin}
-            className="bg-gray-700 text-white rounded py-4 text-xl font-semibold hover:bg-gray-800"
-            >
-            Log In
-            </button>
-                <p className="text-center text-base text-gray-500 mt-3">
-                    パスワードを忘れた方は{" "}
-                    <a
-                        href="#"
-                        onClick={(e) => e.preventDefault()}
-                        className="text-blue-600 font-medium cursor-default"
-                    >
-                    こちら
-                </a>
-                </p>
-            <div className="flex items-center justify-center mt-3">
-            <hr className="w-1/4 border-gray-300" />
-            <span className="mx-3 text-gray-500 text-base">or</span>
-            <hr className="w-1/4 border-gray-300" />
-            </div>
-            <div className="flex justify-center gap-8 mt-3">
-            <img
-                src="/Google.png"
-                alt="Google login"
-                className="w-28 h-auto cursor-pointer"
-                onClick={() => alert("Googleログイン未実装")}
-            />
-            <img
-                src="/Facebook.png"
-                alt="Facebook login"
-                className="w-28 h-auto cursor-pointer"
-                onClick={() => alert("Facebookログイン未実装")}
-            />
-            </div>
-                <p className="text-center text-base text-gray-500 mt-3">
-                    アカウントをお持ちでない方は{" "}
-                    <a href="#" onClick={(e) => e.preventDefault()} className="text-blue-600 font-medium">
-                        新規登録
-                    </a>
-                </p>
-            </div>
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center p-24 bg-gray-50">
+      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+        <div className="text-center">
+          <h1 className="text-4xl text-gray-600 font-bold mb-2">研Q</h1>
+          <h2 className="text-2xl text-gray-600 font-bold">研究者ログイン</h2>
         </div>
-    );
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            {error}
+          </div>
+        )}
+
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div>
+            <label
+              htmlFor="companyUserName"
+              className="block text-sm font-medium text-gray-700"
+            >
+              ユーザー名
+            </label>
+            <input
+              id="companyUserName"
+              name="companyUserName"
+              type="text"
+              required
+              value={companyUserName}
+              onChange={(e) => setCompanyUserName(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 bg-white focus:ring focus:ring-indigo-300 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              パスワード
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 bg-white focus:ring focus:ring-indigo-300 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400"
+            >
+              {isLoading ? "ログイン中..." : "ログイン"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }
