@@ -26,10 +26,10 @@ jobs:
       - name: npm install, build, and test
         env:
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}  # GitHub Secrets から取得
-          NEXT_PUBLIC_AZURE_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}  # GitHub Secrets から取得
+          NEXT_PUBLIC_AZURE_API_URL: ${{ secrets.NEXT_PUBLIC_AZURE_API_URL }}  # GitHub Secrets から取得
         run: |
           echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > .env.local
-          echo "NEXT_PUBLIC_AZURE_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" >> .env.local
+          echo "NEXT_PUBLIC_AZURE_API_URL=${{ secrets.NEXT_PUBLIC_AZURE_API_URL }}" >> .env.local
           cat .env.local  # デバッグ用
           npm install
           npm run build --if-present
