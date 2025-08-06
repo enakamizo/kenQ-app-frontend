@@ -1,30 +1,20 @@
 import { withAuth } from "next-auth/middleware";
 
 export default withAuth(
-  function middleware(req) {
-    // この関数は認証されたユーザーのリクエストに対してのみ実行されます
-    console.log("認証されたユーザーがアクセス:", req.nextUrl.pathname);
+  () => {
+    // 認証されていれば何もしない（pass-through）
   },
   {
     callbacks: {
-      authorized: ({ token }) => {
-        // tokenが存在する場合は認証済み
-        return !!token;
-      },
+      authorized: ({ token }) => !!token, // トークンがあればOK
     },
     pages: {
-      signIn: '/login',
+      signIn: "/login", // ログインページへリダイレクト
     },
   }
 );
 
-// 保護するルートを指定
+// このミドルウェアを適用するルートパターン
 export const config = {
-  matcher: [
-    // 保護対象のページを指定
-    '/mypage/:path*',
-    '/projects/:path*',
-    '/researcher/:path*',
-    '/register/:path*',
-  ]
+  matcher: ["/mypage", "/projects/:path*", "/researcher/:path*", "/register/:path*"],
 };
